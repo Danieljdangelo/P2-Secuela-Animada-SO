@@ -23,6 +23,7 @@ public class Characters {
     private int strength;
     private int agility;
     private String imagePath;
+    private Characters pNext;
     
     public Characters(String id, String name, int priority, int skill, int life, int strength, int agility, String imagePath){
         this.id = id;
@@ -159,6 +160,20 @@ public class Characters {
      */
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    /**
+     * @return the pNext
+     */
+    public Characters getpNext() {
+        return pNext;
+    }
+
+    /**
+     * @param pNext the pNext to set
+     */
+    public void setpNext(Characters pNext) {
+        this.pNext = pNext;
     }
 
     

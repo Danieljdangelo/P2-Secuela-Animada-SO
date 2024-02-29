@@ -4,10 +4,18 @@
  */
 package Dashboard;
 
+import Classes.AI;
+import Classes.Admin;
+import Classes.Queues;
 import java.awt.Graphics;
 import java.awt.Image;
+import static java.lang.Thread.sleep;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *
@@ -18,10 +26,19 @@ public class Dashboard extends javax.swing.JFrame {
     /**
      * Creates new form Dashboard
      */
+    
+    Queues queue = new Queues();
+//    Semaphore mainMutex = new Semaphore(1);
+    private Semaphore sem;
+    private Admin admin;
+    private AI ai;
+    
     public Dashboard() {
         initComponents();
 //        txtDecisionIA.setBackground(new java.awt.Color(0,0,0,1));
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -146,6 +163,11 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel9.setText("IA");
 
         btnStart.setText("Iniciar Combate");
+        btnStart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStartActionPerformed(evt);
+            }
+        });
 
         jLabel8.setText("Ganadores");
 
@@ -201,25 +223,15 @@ public class Dashboard extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(859, Short.MAX_VALUE)
+                .addContainerGap(839, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtP2USM, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(txtP1USM, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(67, 67, 67))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(151, 151, 151))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(196, 196, 196))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(197, 197, 197)))
-                        .addComponent(txtP3USM, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtRefuerzosUSM, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtP1USM, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                            .addComponent(txtP2USM)
+                            .addComponent(txtP3USM)
+                            .addComponent(txtRefuerzosUSM))
+                        .addGap(37, 37, 37))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addGap(192, 192, 192))
@@ -231,48 +243,63 @@ public class Dashboard extends javax.swing.JFrame {
                         .addGap(195, 195, 195))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(txtVictoriasUSM, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(179, 179, 179))))
+                        .addGap(179, 179, 179))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(190, 190, 190))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(190, 190, 190))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(143, 143, 143))))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(54, 54, 54)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(183, 183, 183)
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGap(169, 169, 169)
+                                    .addComponent(jLabel13))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGap(171, 171, 171)
+                                    .addComponent(jLabel14))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGap(177, 177, 177)
+                                    .addComponent(jLabel15))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                    .addGap(108, 108, 108)
+                                    .addComponent(jLabel12)
+                                    .addGap(129, 129, 129)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(txtVictoriasAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(110, 110, 110)))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                            .addGap(54, 54, 54)
+                            .addComponent(jLabel1)))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 166, Short.MAX_VALUE)
+                    .addComponent(txtDecisionIA, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(495, 495, 495))
+                .addGroup(jPanel2Layout.createSequentialGroup()
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(129, 129, 129)
-                                        .addComponent(jLabel16)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                            .addGap(115, 115, 115)
-                                            .addComponent(jLabel13))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                            .addGap(117, 117, 117)
-                                            .addComponent(jLabel14))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                            .addGap(123, 123, 123)
-                                            .addComponent(jLabel15))
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txtP1Avatar)
-                                            .addComponent(txtP2Avatar)
-                                            .addComponent(txtP3Avatar)
-                                            .addComponent(txtRefuerzosAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                            .addGap(59, 59, 59)
-                                            .addComponent(jLabel12)
-                                            .addGap(129, 129, 129)))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                        .addComponent(txtVictoriasAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(110, 110, 110)))
-                                .addComponent(jLabel1))
+                            .addGap(546, 546, 546)
+                            .addComponent(jLabel11)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(duracionCombate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGap(35, 35, 35)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtP2Avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 166, Short.MAX_VALUE)
-                                    .addComponent(txtDecisionIA, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(79, 79, 79))
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addGap(70, 70, 70)
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtP1Avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtRefuerzosAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(50, 50, 50)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -297,22 +324,18 @@ public class Dashboard extends javax.swing.JFrame {
                                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                                     .addGap(18, 18, 18)
                                                     .addComponent(imgUSM4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                        .addComponent(sldDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGap(492, 492, 492)
-                            .addComponent(jLabel11)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(duracionCombate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(sldDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtP3Avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGap(416, 416, 416)))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(88, 88, 88)
+                .addGap(82, 82, 82)
                 .addComponent(jLabel2)
-                .addGap(15, 15, 15)
-                .addComponent(jLabel4)
                 .addGap(18, 18, 18)
+                .addComponent(jLabel4)
+                .addGap(21, 21, 21)
                 .addComponent(txtP1USM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
@@ -406,12 +429,59 @@ public class Dashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void sldDuracionStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldDuracionStateChanged
-        duracionCombate.setText(String.valueOf(sldDuracion.getValue()));
+        duracionCombate.setText(String.valueOf(getSldDuracion().getValue()));
     }//GEN-LAST:event_sldDuracionStateChanged
 
     private void txtRefuerzosUSMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRefuerzosUSMActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtRefuerzosUSMActionPerformed
+
+    private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
+        try{
+            sem = new Semaphore(1, true);
+            admin = new Admin(sem, 20);
+            ai = new AI(sem, getSldDuracion().getValue());
+            
+            while(true){
+                sem.acquire();
+                ai.setStatus("Decidiendo");
+                txtDecisionIA.setText(ai.getStatus());
+//                sleep(2000);
+                sem.release();
+                
+                ai.start();
+                
+                sem.acquire();
+                ai.setStatus("Anunciando");
+                txtDecisionIA.setText(ai.getStatus());
+//                sleep(2000);
+                sem.release();
+                
+                admin.start();
+                
+                sem.acquire();
+                ai.setStatus("Esperando");
+                txtDecisionIA.setText(ai.getStatus());
+//                sleep(2000);
+                sem.release();
+                
+                sem.acquire();
+                txtP1Avatar.setText(admin.getP1Avatar().print());
+                txtP2Avatar.setText(admin.getP2Avatar().print());
+                txtP3Avatar.setText(admin.getP3Avatar().print());
+                txtRefuerzosAvatar.setText(admin.getRefuerzoAvatar().print());
+                txtP1USM.setText(admin.getP1USM().print());
+                txtP2USM.setText(admin.getP2USM().print());
+                txtP3USM.setText(admin.getP3USM().print());
+                txtRefuerzosUSM.setText(admin.getRefuerzoUSM().print());
+                
+                sem.release();
+            }
+            
+        }catch (InterruptedException ex) {
+            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnStartActionPerformed
 
     /**
      * @param args the command line arguments
@@ -452,10 +522,6 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnStart;
     private javax.swing.JLabel duracionCombate;
     private javax.swing.JPanel imgAvatar;
-    private javax.swing.JPanel imgUSM;
-    private javax.swing.JPanel imgUSM1;
-    private javax.swing.JPanel imgUSM2;
-    private javax.swing.JPanel imgUSM3;
     private javax.swing.JPanel imgUSM4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -511,6 +577,13 @@ public class Dashboard extends javax.swing.JFrame {
             
             super.paint(g);
         }
+    }
+
+    /**
+     * @return the sldDuracion
+     */
+    public javax.swing.JSlider getSldDuracion() {
+        return sldDuracion;
     }
 
 }

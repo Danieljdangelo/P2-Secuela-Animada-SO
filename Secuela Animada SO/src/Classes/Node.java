@@ -9,11 +9,11 @@ package Classes;
  * @author José
  */
 public class Node {
-    private int data;
+    private Characters data;
     Node pNext;
     private Node pPrev;
     
-    public Node(int data) {
+    public Node(Characters data) {
         this.data = data;
         this.pNext = null;
         this.pPrev = null;
@@ -22,14 +22,14 @@ public class Node {
     /**
      * @return the data
      */
-    public int getData() {
+    public Characters getData() {
         return data;
     }
 
     /**
      * @param data the data to set
      */
-    public void setData(int data) {
+    public void setData(Characters data) {
         this.data = data;
     }
 

@@ -18,11 +18,12 @@ public class Main {
     public static void main(String[] args) {
         // TODO code application logic here
         Dashboard db = new Dashboard();
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                db.setVisible(true);
-            }
-        });
+        db.setVisible(true);
+//        EventQueue.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                db.setVisible(true);
+//            }
+//        });
     }
 }

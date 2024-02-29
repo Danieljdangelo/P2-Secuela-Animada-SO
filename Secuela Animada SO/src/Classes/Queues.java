@@ -4,6 +4,7 @@
  */
 package Classes;
 
+import Dashboard.Dashboard;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,8 +16,10 @@ public class Queues {
 //1, 2 y 3, y la cola de refuerzo, existiendo un total de 8 colas en la
 //simulación.
     
-    private Node pHead;
-    private Node pTail;
+//    private Node pHead;
+//    private Node pTail;
+    private Characters pHead;
+    private Characters pTail;
     private int size;
     
     public Queues(){
@@ -24,34 +27,62 @@ public class Queues {
         this.pTail = null;
         this.size = 0;    
     }
-
+    
     /**
      * @return the pHead
      */
-    public Node getpHead() {
+    public Characters getpHead() {
         return pHead;
     }
 
     /**
      * @param pHead the pHead to set
      */
-    public void setpHead(Node pHead) {
+    public void setpHead(Characters pHead) {
         this.pHead = pHead;
     }
 
     /**
      * @return the pTail
      */
-    public Node getpTail() {
+    public Characters getpTail() {
         return pTail;
     }
 
     /**
      * @param pTail the pTail to set
      */
-    public void setpTail(Node pTail) {
+    public void setpTail(Characters pTail) {
         this.pTail = pTail;
     }
+
+//    /**
+//     * @return the pHead
+//     */
+//    public Node getpHead() {
+//        return pHead;
+//    }
+//
+//    /**
+//     * @param pHead the pHead to set
+//     */
+//    public void setpHead(Node pHead) {
+//        this.pHead = pHead;
+//    }
+//
+//    /**
+//     * @return the pTail
+//     */
+//    public Node getpTail() {
+//        return pTail;
+//    }
+//
+//    /**
+//     * @param pTail the pTail to set
+//     */
+//    public void setpTail(Node pTail) {
+//        this.pTail = pTail;
+//    }
 
     /**
      * @return the size
@@ -77,41 +108,80 @@ public class Queues {
         this.size = 0;
     }
     
-    public Object readHead(){
-        return pHead.getData();
-    }
+//    public Object readHead(){
+//        return pHead.getData();
+//    }
     
-    public void queue(int data){
-        Node pNew = new Node(data);
-        pNew.setpNext(null);
-        
-        if(pHead == null){
-            pHead = pNew;
+//    public void queue(Characters data){
+//        Node pNew = new Node(data);
+//        pNew.setpNext(null);
+//        
+//        if(pHead == null){
+//            pHead = pNew;
+//        }else{
+//            pTail.setpNext(pNew);
+//        }
+//        pTail = pNew;
+//        size++;
+//    }
+    
+    public void queue(Characters data){
+        if(isEmpty()){
+            pHead = pTail = data;
         }else{
-            pTail.setpNext(pNew);
+            Characters pNew = pTail;
+            pNew.setpNext(data);
+            pTail = pNew.getpNext();
         }
-        pTail = pNew;
         size++;
     }
     
-    public void dequeue(){
-        Node pTemp = pHead;
-        pHead = pHead.getpNext();
-        size--;
-        if(pHead == null){
-            pTail = null;
+//    public void dequeue(){
+//        Node pTemp = pHead;
+//        pHead = pHead.getpNext();
+//        size--;
+//        if(pHead == null){
+//            pTail = null;
+//        }
+//    }
+    
+    public Characters dequeue(){
+        if(isEmpty()){
+            return null;
+        }else{
+            Characters pNew = pHead;
+            pHead = pNew.getpNext();
+            size--;
+            pNew.setpNext(null);
+            return pNew;
         }
     }
     
-    public void print(){
-        Node pAux = pHead;
+//    public String print(){
+//        Node pAux = pHead;
+//        String cola = "";
+//        
+//        while(pAux != null){
+//            cola += pAux.getData() + ", ";
+//            pAux = pAux.pNext;
+//        }
+//        return cola;
+//    }   
+    
+    public String print(){
         String cola = "";
-        
-        while(pAux != null){
-            cola += pAux.getData() + ", ";
-            pAux = pAux.pNext;
+        if(isEmpty()){
+            return "Vacía";
+        }else{
+            Characters pNew = pHead;
+            int auxSize = 0;
+            while(auxSize < size){
+                cola += pNew.getId() + ", ";
+                pNew = pNew.getpNext();
+                auxSize++;
+            }
         }
-        JOptionPane.showMessageDialog(null, cola);
-    }    
+        return cola;
+    }   
     
 }
