@@ -40,12 +40,14 @@ public class Admin extends Thread{
     private Semaphore sem;
     private int idAvatar;
     private int idUSM;
+    private AI ai;
+    private int time;
     String[] usmCharacters = new String[5];
     String[] avatarCharacters = new String[5];
     String[] usmImgCharacters = new String[5];
     String[] avatarImgCharacters = new String[5];
     
-    public Admin(Semaphore sem, int nCharacters){
+    public Admin(Semaphore sem, int nCharacters, AI ai, int time){
         this.sem = sem;
         this.p1Avatar = new Queues();
         this.p2Avatar = new Queues();
@@ -63,6 +65,8 @@ public class Admin extends Thread{
         this.usmCounter = 0;
         this.idAvatar = 1;
         this.idUSM = 1;
+        this.ai = ai;
+        this.time = time;
         this.usmCharacters[0] = "Mordecai";
         this.usmCharacters[1] = "Rigby";
         this.usmCharacters[2] = "Benson";
@@ -94,139 +98,214 @@ public class Admin extends Thread{
     }
 
     public void createCharacters(String character){
-        float auxSkill = (float) Math.random();
-        float auxLife = (float) Math.random();
-        float auxStrength = (float) Math.random();
-        float auxAgility = (float) Math.random();
         
-        int auxPriority = 0;
-        
-        int numSkill = 0;
-        int numLife = 0;
-        int numStrength = 0;
-        int numAgility = 0;
-        
-        if(auxSkill >= 0.4){
-            auxPriority++;
-            numSkill++;
-        }
-        
-        if(auxLife >= 0.3){
-            auxPriority++;
-            numLife++;
-        }
-        
-        if(auxStrength >= 0.5){
-            auxPriority++;
-            numStrength++;
-        }
-        
-        if(auxAgility >= 0.6){
-            auxPriority++;
-            numAgility++;
-        }
-        
-        switch(auxPriority){
-            case 0:
-                auxSkill = (int) Math.random() * 25;
-                auxLife = (int) Math.random() * 300;
-                auxStrength = (int) Math.random() * 500;
-                auxAgility = (int) Math.random() * 250;
-                auxPriority = 3;
-                break;
-            
+        Random random = new Random();
+    int auxPriority;
+    float auxSkill, auxLife, auxStrength, auxAgility;
+
+    // Asignar prioridad
+    auxPriority = random.nextInt(3) + 1; // Valores entre 1 y 3
+
+    // Asignar habilidades según la prioridad
+    switch (auxPriority) {
+        case 1:
+            auxSkill = random.nextInt(51) + 50;    // Entre 50 y 100
+            auxLife = random.nextInt(301) + 300;   // Entre 300 y 600
+            auxStrength = random.nextInt(501) + 500;  // Entre 500 y 1000
+            auxAgility = random.nextInt(251) + 250;   // Entre 250 y 500
+            break;
+
+        case 2:
+            auxSkill = random.nextInt(41) + 10;    // Entre 10 y 50
+            auxLife = random.nextInt(201) + 100;  // Entre 100 y 300
+            auxStrength = random.nextInt(401) + 100;  // Entre 100 y 500
+            auxAgility = random.nextInt(151) + 50;   // Entre 50 y 200
+            break;
+
+        default: // Prioridad 3
+            auxSkill = random.nextInt(26);  // Entre 0 y 25
+            auxLife = random.nextInt(101);  // Entre 0 y 100
+            auxStrength = random.nextInt(201);  // Entre 0 y 200
+            auxAgility = random.nextInt(101);   // Entre 0 y 100
+            break;
+    }
+
+    // Crear personaje
+    Characters newCharacter;
+    int contadorPersonajes = 0;//Este contador es para que cuando llegue a cierta cantidad, poner el thread a dormir
+    if ("A".equals(character)) {
+        int auxPosition = random.nextInt(5);
+        newCharacter = new Characters("A" + getIdAvatar(), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.avatarImgCharacters[auxPosition]);
+        System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
+        setIdAvatar(getIdAvatar() + 1);
+        switch (auxPriority) {
             case 1:
+                getP1Avatar().queue(newCharacter);
+                contadorPersonajes ++;
+                break;
             case 2:
-                if(numSkill == 1){
-                    auxSkill = (int) Math.random() * 50;
-                }else{
-                    auxSkill = (int) Math.random() * 40;
-                }
-                
-                if(numLife ==  1){
-                    auxLife = (int) Math.random() * 600;
-                }else{
-                    auxLife = (int) Math.random() * 500;
-                }
-                
-                if(numStrength == 1){
-                    auxStrength = (int) Math.random() * 1000;
-                }else{
-                    auxStrength = (int) Math.random() * 900;
-                }
-                
-                if(numAgility == 1){
-                    auxAgility = (int) Math.random() * 500;
-                }else{
-                    auxAgility = (int) Math.random() * 400;
-                }
-                
-                auxPriority = 2;
+                getP2Avatar().queue(newCharacter);
+                contadorPersonajes ++;
                 break;
-                
             default:
-                if(numSkill == 1){
-                    auxSkill = (int) Math.random() * 75;
-                }else{
-                    auxSkill = (int) Math.random() * 65;
-                }
-                
-                if(numLife ==  1){
-                    auxLife = (int) Math.random() * 900;
-                }else{
-                    auxLife = (int) Math.random() * 800;
-                }
-                
-                if(numStrength == 1){
-                    auxStrength = (int) Math.random() * 1500;
-                }else{
-                    auxStrength = (int) Math.random() * 1300;
-                }
-                
-                if(numAgility == 1){
-                    auxAgility = (int) Math.random() * 750;
-                }else{
-                    auxAgility = (int) Math.random() * 650;
-                }
-                
-                auxPriority = 1;
+                getP3Avatar().queue(newCharacter);
+                contadorPersonajes ++;
+                break;
+        }
+    } else {
+        int auxPosition = random.nextInt(5);
+        newCharacter = new Characters("U" + getIdUSM(), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.usmImgCharacters[auxPosition]);
+        System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
+        setIdUSM(getIdUSM() + 1);
+        switch (auxPriority) {
+            case 1:
+                getP1USM().queue(newCharacter);
+                contadorPersonajes ++;
+                break;
+            case 2:
+                getP2USM().queue(newCharacter);
+                contadorPersonajes ++;
+                break;
+            default:
+                getP3USM().queue(newCharacter);
+                contadorPersonajes ++;
                 break;
         }
         
-        if("A".equals(character)){
-            Random random = new Random();
-            int auxPosition = random.nextInt(5);
-            Characters newCharacterAvatar = new Characters("A-" + String.valueOf(getIdAvatar()), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.avatarImgCharacters[auxPosition]);
-            setIdAvatar(getIdAvatar() + 1);
-            switch(auxPriority){
-                case 1:
-                    getP1Avatar().queue(newCharacterAvatar);
-                    break;
-                case 2:
-                    getP2Avatar().queue(newCharacterAvatar);
-                    break;
-                default:
-                    getP3Avatar().queue(newCharacterAvatar);
-                    break;
-            }
-        }else{
-            Random random = new Random();
-            int auxPosition = random.nextInt(5);
-            Characters newCharacterUSM = new Characters("U-" + String.valueOf(getIdUSM()), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.usmImgCharacters[auxPosition]);
-            setIdUSM(getIdUSM() + 1);
-            switch(auxPriority){
-                case 1:
-                    getP1USM().queue(newCharacterUSM);
-                    break;
-                case 2:
-                    getP2USM().queue(newCharacterUSM);
-                    break;
-                default:
-                    getP3USM().queue(newCharacterUSM);
-                    break;
-            }
-        }
-        
+    }
+//        float auxSkill = (float) Math.random();
+//        float auxLife = (float) Math.random();
+//        float auxStrength = (float) Math.random();
+//        float auxAgility = (float) Math.random();
+//        
+//        int auxPriority = 0;
+//        
+//        int numSkill = 0;
+//        int numLife = 0;
+//        int numStrength = 0;
+//        int numAgility = 0;
+//        
+//        if(auxSkill >= 0.4){
+//            auxPriority++;
+//            numSkill++;
+//        }
+//        
+//        if(auxLife >= 0.3){
+//            auxPriority++;
+//            numLife++;
+//        }
+//        
+//        if(auxStrength >= 0.5){
+//            auxPriority++;
+//            numStrength++;
+//        }
+//        
+//        if(auxAgility >= 0.6){
+//            auxPriority++;
+//            numAgility++;
+//        }
+//        
+//        switch(auxPriority){
+//            case 0:
+//                auxSkill = (int) Math.random() * 25;
+//                auxLife = (int) Math.random() * 300;
+//                auxStrength = (int) Math.random() * 500;
+//                auxAgility = (int) Math.random() * 250;
+//                auxPriority = 3;
+//                break;
+//            
+//            case 1:
+//            case 2:
+//                if(numSkill == 1){
+//                    auxSkill = (int) Math.random() * 50;
+//                }else{
+//                    auxSkill = (int) Math.random() * 40;
+//                }
+//                
+//                if(numLife ==  1){
+//                    auxLife = (int) Math.random() * 600;
+//                }else{
+//                    auxLife = (int) Math.random() * 500;
+//                }
+//                
+//                if(numStrength == 1){
+//                    auxStrength = (int) Math.random() * 1000;
+//                }else{
+//                    auxStrength = (int) Math.random() * 900;
+//                }
+//                
+//                if(numAgility == 1){
+//                    auxAgility = (int) Math.random() * 500;
+//                }else{
+//                    auxAgility = (int) Math.random() * 400;
+//                }
+//                
+//                auxPriority = 2;
+//                break;
+//                
+//            default:
+//                if(numSkill == 1){
+//                    auxSkill = (int) Math.random() * 75;
+//                }else{
+//                    auxSkill = (int) Math.random() * 65;
+//                }
+//                
+//                if(numLife ==  1){
+//                    auxLife = (int) Math.random() * 900;
+//                }else{
+//                    auxLife = (int) Math.random() * 800;
+//                }
+//                
+//                if(numStrength == 1){
+//                    auxStrength = (int) Math.random() * 1500;
+//                }else{
+//                    auxStrength = (int) Math.random() * 1300;
+//                }
+//                
+//                if(numAgility == 1){
+//                    auxAgility = (int) Math.random() * 750;
+//                }else{
+//                    auxAgility = (int) Math.random() * 650;
+//                }
+//                
+//                auxPriority = 1;
+//                break;
+//        }
+//        
+//        if("A".equals(character)){
+//            Random random = new Random();
+//            int auxPosition = random.nextInt(5);
+//            Characters newCharacterAvatar = new Characters("A" + String.valueOf(getIdAvatar()), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.avatarImgCharacters[auxPosition]);
+//            setIdAvatar(getIdAvatar() + 1);
+//            switch(auxPriority){
+//                case 1:
+//                    getP1Avatar().queue(newCharacterAvatar);
+//                    break;
+//                case 2:
+//                    getP2Avatar().queue(newCharacterAvatar);
+//                    break;
+//                default:
+//                    getP3Avatar().queue(newCharacterAvatar);
+//                    break;
+//            }
+//        }else{
+//            Random random = new Random();
+//            int auxPosition = random.nextInt(5);
+//            Characters newCharacterUSM = new Characters("U" + String.valueOf(getIdUSM()), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.usmImgCharacters[auxPosition]);
+//            setIdUSM(getIdUSM() + 1);
+//            switch(auxPriority){
+//                case 1:
+//                    getP1USM().queue(newCharacterUSM);
+//                    break;
+//                case 2:
+//                    getP2USM().queue(newCharacterUSM);
+//                    break;
+//                default:
+//                    getP3USM().queue(newCharacterUSM);
+//                    break;
+//            }
+//        }
+//        
     }
     
     public void createRandomCharacters(){
@@ -237,6 +316,18 @@ public class Admin extends Thread{
         }
     }
     
+    public void sendCharacters(){
+        Characters avatarP1 = p1Avatar.dequeue();
+        Characters usmP1 = p1USM.dequeue();
+        
+        if (avatarP1 != null && usmP1 != null) {
+            ai.reciveCharacters(avatarP1, usmP1); // Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes");
+        } else {
+            // Si alguno de los personajes es nulo, mostrar un mensaje de error o manejar la situación según sea necesario
+            System.out.println("No se pudo obtener un personaje de cada serie para la prioridad 1.");
+        }
+    }
 //    public void printQueues(){
 //        getP1Avatar().print();
 //    }
@@ -247,11 +338,14 @@ public class Admin extends Thread{
             try{
                 sem.acquire();
                 if(cycles == 1){
+                    
                     createRandomCharacters();
+                    sendCharacters();
                     cycles--;
                 }else{
                     cycles++;
                 }
+                sleep(time * 1000);
                 sem.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
