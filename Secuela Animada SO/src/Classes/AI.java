@@ -4,6 +4,7 @@
  */
 package Classes;
 
+import Dashboard.Dashboard;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,93 +20,110 @@ public class AI  extends Thread{
     
     private int time;
     private String status;
-    private Characters avatar;
-    private Characters usm;
+    public Characters avatar;
+    public Characters usm;
     private int result;
     private Semaphore sem;
+    private Dashboard db;
     
-    public AI(Semaphore sem, int time){
+    public AI(Semaphore sem, int time, Dashboard db){
         this.sem = sem;
         this.time = time;
         this.status = "Esperando";
+        this.db = db;
     }
     
     public void caseCombat(Characters avatar, Characters usm){
-        float probability = (float) Math.random();
-        if(probability >= 0.0 && probability < 0.4){
-            Characters combat = combat(avatar, usm);
-            if(combat == avatar){
-                result = 1; //Ganó avatar
+        if(avatar != null && usm != null){
+            float probability = (float) Math.random();
+            if(probability >= 0.0 && probability < 0.4){
+                showCharactersInfo();
+                Characters combat = combat();
+                if(combat == avatar){
+                    result = 1; //Ganó avatar
+                }else{
+                    result = 2; //Ganó usm
+                }
+            }else if(probability >= 0.4 && probability < 0.67){
+                result = 3; //Hay empate
             }else{
-                result = 2; //Ganó usm
+                result = 4; //No hay combate
             }
-        }else if(probability >= 0.4 && probability < 0.67){
-            result = 3; //Hay empate
         }else{
-            result = 4; //No hay combate
+            System.out.println("Los personajes son nulos en el case combat");
         }
     }
     
-    public Characters combat(Characters avatar, Characters usm){
+    public Characters combat(){
         int pointsAvatar = 0;
         int pointsUSM = 0;
         
-        if(avatar.getSkill() > usm.getSkill()){
+        if(this.avatar.getSkill() > this.usm.getSkill()){
             pointsAvatar++;
-        }else if(avatar.getSkill() == usm.getSkill()){
-            pointsAvatar++;
+        }else if(this.avatar.getSkill() < this.usm.getSkill()){
             pointsUSM++;
         }else{
+            pointsAvatar++;
             pointsUSM++;
         }
         
-        if(avatar.getLife() > usm.getLife()){
+        if(this.avatar.getLife() > this.usm.getLife()){
             pointsAvatar++;
-        }else if(avatar.getLife() == usm.getLife()){
-            pointsAvatar++;
+        }else if(this.avatar.getLife() < this.usm.getLife()){
             pointsUSM++;
         }else{
+            pointsAvatar++;
             pointsUSM++;
         }
         
-        if(avatar.getStrength() > usm.getStrength()){
+        if(this.avatar.getStrength() > this.usm.getStrength()){
             pointsAvatar++;
-        }else if(avatar.getStrength() == usm.getStrength()){
-            pointsAvatar++;
+        }else if(this.avatar.getStrength() < this.usm.getStrength()){
             pointsUSM++;
         }else{
+            pointsAvatar++;
             pointsUSM++;
         }
         
-        if(avatar.getAgility() > usm.getAgility()){
+        if(this.avatar.getAgility() > this.usm.getAgility()){
             pointsAvatar++;
-        }else if(avatar.getAgility() == usm.getAgility()){
-            pointsAvatar++;
+        }else if(this.avatar.getAgility() < this.usm.getAgility()){
             pointsUSM++;
         }else{
+            pointsAvatar++;
             pointsUSM++;
         }
         
         if(pointsAvatar > pointsUSM){
             return avatar; //Ganó avatar
-        }else if(pointsAvatar == pointsUSM){
-            int random = (int) (Math.floor(Math.random() * (2 - 1 + 1) + 1));
-            if(random == 1){
+        }else if(pointsAvatar < pointsUSM){
+            return usm;
+        }else{
+            int random = (int) (Math.random() * 2); // random entre 0 y 1
+            if (random == 0){
                 return avatar;
             }else{
                 return usm;
             }
-        }else{
-            return usm;
         }
-        
-    }
+//            int random = (int) (Math.floor(Math.random() * (2 - 1 + 1) + 1));
+//            if(random == 1){
+//                return avatar;
+//            }else{
+//                return usm;
+//            }
+//        }else{
+//            return usm;
+//        }
+//        
+   }
     
     @Override
     public void run(){
         while(true){
             try{
 //                sem.acquire();
+                showCharactersInfo();
                 caseCombat(avatar, usm);
                 sleep(time * 1000);
 //                sem.release();
@@ -114,7 +132,21 @@ public class AI  extends Thread{
             }
         }
     }
-
+//Hay error porque no está recibiendo los characters, puede que no se estén creando los nodos
+    public void reciveCharacters(Characters avatar, Characters usm){
+        setAvatar(avatar);
+        setUsm(usm);
+    }
+    
+    public void showCharactersInfo(){
+        if (avatar != null && usm != null) {
+            db.getPanelAvatar().setText(this.avatar.getInfo());
+            db.getPanelUsm().setText(this.usm.getInfo());
+        } else {
+            System.out.println("Al menos uno de los personajes es null");
+            }
+    }
+    
     /**
      * @return the time
      */

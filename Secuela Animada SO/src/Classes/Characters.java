@@ -175,6 +175,11 @@ public class Characters {
     public void setpNext(Characters pNext) {
         this.pNext = pNext;
     }
+    
+    public String getInfo(){
+        String infoChar;
+        return infoChar = "\nID: " + this.getId() + "\nNombre: " + this.getName() + "\nSkill: " + this.getSkill() + "\nLife: " + this.getLife() + "\nStrength: " + this.getStrength() + "\nAgility: " + this.getAgility();
+    }
 
     
     
