@@ -14,6 +14,7 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -46,6 +47,14 @@ public class Dashboard extends javax.swing.JFrame {
     
     public JTextPane getPanelUsm(){
         return infoUsm;
+    }
+    
+    public JTextField getVictoriasAvatarLabel(){
+        return txtVictoriasAvatar;
+    }
+    
+    public JTextField getVictoriasUsmLabel(){
+        return txtVictoriasUSM;
     }
 
     /**
@@ -376,9 +385,9 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(txtRefuerzosUSM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel16))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel10))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtVictoriasUSM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -455,7 +464,7 @@ public class Dashboard extends javax.swing.JFrame {
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
         try{
             sem = new Semaphore(1, true);
-            ai = new AI(sem, getSldDuracion().getValue(), this);
+            ai = new AI(sem, getSldDuracion().getValue(), this, admin);
             admin = new Admin(sem, 20, ai, getSldDuracion().getValue());
             
             while(true){
@@ -490,6 +499,9 @@ public class Dashboard extends javax.swing.JFrame {
                 txtP2USM.setText(admin.getP2USM().print());
                 txtP3USM.setText(admin.getP3USM().print());
                 txtRefuerzosUSM.setText(admin.getRefuerzoUSM().print());
+                txtGanadores.setText(admin.getWinners().print());
+                txtVictoriasAvatar.setText(Integer.toString(admin.getAvatarWinners()));
+                txtVictoriasUSM.setText(Integer.toString(admin.getUsmWinners()));
                 
                 sem.release();
             }

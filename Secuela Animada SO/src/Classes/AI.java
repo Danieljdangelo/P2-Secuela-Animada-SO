@@ -25,30 +25,40 @@ public class AI  extends Thread{
     private int result;
     private Semaphore sem;
     private Dashboard db;
+    private Admin admin;
     
-    public AI(Semaphore sem, int time, Dashboard db){
+    public AI(Semaphore sem, int time, Dashboard db, Admin admin){
         this.sem = sem;
         this.time = time;
         this.status = "Esperando";
         this.db = db;
+        this.admin = admin;
     }
     
-    public void caseCombat(Characters avatar, Characters usm){
-        if(avatar != null && usm != null){
+    public void caseCombat(/*Characters avatar, Characters usm*/){
+        if(this.avatar != null && this.usm != null){
             float probability = (float) Math.random();
             if(probability >= 0.0 && probability < 0.4){
                 showCharactersInfo();
                 Characters combat = combat();
-                if(combat == avatar){
+                if(combat.equals(this.avatar)){
                     result = 1; //Ganó avatar
+                    admin.getP1Avatar().dequeue();//Cuando gana avatar, hay que sacar al ganador de la cola de prioridad 1 y meterlo en la cola de ganadores
+                    admin.getWinners().queue(combat);
+                    admin.setAvatarWinners(+1);
                 }else{
                     result = 2; //Ganó usm
+                    admin.getP1USM().dequeue();//Cuando gana usm, hay que sacar al ganador de la cola de prioridad 1 y meterlo en la cola de ganadores junto a los ganadores de avatar
+                    admin.getWinners().queue(combat);
+                    admin.setUsmWinners(+1);
                 }
             }else if(probability >= 0.4 && probability < 0.67){
                 result = 3; //Hay empate
+                
             }else{
                 result = 4; //No hay combate
             }
+//            cleanText();
         }else{
             System.out.println("Los personajes son nulos en el case combat");
         }
@@ -124,7 +134,7 @@ public class AI  extends Thread{
             try{
 //                sem.acquire();
                 showCharactersInfo();
-                caseCombat(avatar, usm);
+                caseCombat(/*avatar, usm*/);
                 sleep(time * 1000);
 //                sem.release();
             }catch (InterruptedException ex) {
@@ -134,8 +144,8 @@ public class AI  extends Thread{
     }
 //Hay error porque no está recibiendo los characters, puede que no se estén creando los nodos
     public void reciveCharacters(Characters avatar, Characters usm){
-        setAvatar(avatar);
-        setUsm(usm);
+        this.setAvatar(avatar);
+        this.setUsm(usm);
     }
     
     public void showCharactersInfo(){
@@ -145,6 +155,12 @@ public class AI  extends Thread{
         } else {
             System.out.println("Al menos uno de los personajes es null");
             }
+    }
+    
+    public void cleanText(){
+        System.out.println("Se estan limpiando los paneles");
+        db.getPanelAvatar().setText("");
+        db.getPanelUsm().setText("");
     }
     
     /**
