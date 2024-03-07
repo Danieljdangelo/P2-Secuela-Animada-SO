@@ -42,12 +42,13 @@ public class Admin extends Thread{
     private int idUSM;
     private AI ai;
     private int time;
+    private Dashboard db;
     String[] usmCharacters = new String[5];
     String[] avatarCharacters = new String[5];
     String[] usmImgCharacters = new String[5];
     String[] avatarImgCharacters = new String[5];
     
-    public Admin(Semaphore sem, int nCharacters, AI ai, int time){
+    public Admin(Semaphore sem, int nCharacters, AI ai, int time, Dashboard db){
         this.sem = sem;
         this.p1Avatar = new Queues();
         this.p2Avatar = new Queues();
@@ -67,6 +68,7 @@ public class Admin extends Thread{
         this.idUSM = 1;
         this.ai = ai;
         this.time = time;
+        this.db = db;
         this.usmCharacters[0] = "Mordecai";
         this.usmCharacters[1] = "Rigby";
         this.usmCharacters[2] = "Benson";
@@ -100,79 +102,79 @@ public class Admin extends Thread{
     public void createCharacters(String character){
         
         Random random = new Random();
-    int auxPriority;
-    float auxSkill, auxLife, auxStrength, auxAgility;
+        int auxPriority;
+        float auxSkill, auxLife, auxStrength, auxAgility;
 
-    // Asignar prioridad
-    auxPriority = random.nextInt(3) + 1; // Valores entre 1 y 3
+        // Asignar prioridad
+        auxPriority = random.nextInt(3) + 1; // Valores entre 1 y 3
 
-    // Asignar habilidades según la prioridad
-    switch (auxPriority) {
-        case 1:
-            auxSkill = random.nextInt(51) + 50;    // Entre 50 y 100
-            auxLife = random.nextInt(301) + 300;   // Entre 300 y 600
-            auxStrength = random.nextInt(501) + 500;  // Entre 500 y 1000
-            auxAgility = random.nextInt(251) + 250;   // Entre 250 y 500
-            break;
-
-        case 2:
-            auxSkill = random.nextInt(41) + 10;    // Entre 10 y 50
-            auxLife = random.nextInt(201) + 100;  // Entre 100 y 300
-            auxStrength = random.nextInt(401) + 100;  // Entre 100 y 500
-            auxAgility = random.nextInt(151) + 50;   // Entre 50 y 200
-            break;
-
-        default: // Prioridad 3
-            auxSkill = random.nextInt(26);  // Entre 0 y 25
-            auxLife = random.nextInt(101);  // Entre 0 y 100
-            auxStrength = random.nextInt(201);  // Entre 0 y 200
-            auxAgility = random.nextInt(101);   // Entre 0 y 100
-            break;
-    }
-
-    // Crear personaje
-    Characters newCharacter;
-    int contadorPersonajes = 0;//Este contador es para que cuando llegue a cierta cantidad, poner el thread a dormir
-    if ("A".equals(character)) {
-        int auxPosition = random.nextInt(5);
-        newCharacter = new Characters("A" + getIdAvatar(), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.avatarImgCharacters[auxPosition]);
-        System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
-        setIdAvatar(getIdAvatar() + 1);
+        // Asignar habilidades según la prioridad
         switch (auxPriority) {
             case 1:
-                getP1Avatar().queue(newCharacter);
-                contadorPersonajes ++;
+                auxSkill = random.nextInt(51) + 50;    // Entre 50 y 100
+                auxLife = random.nextInt(301) + 300;   // Entre 300 y 600
+                auxStrength = random.nextInt(501) + 500;  // Entre 500 y 1000
+                auxAgility = random.nextInt(251) + 250;   // Entre 250 y 500
                 break;
+
             case 2:
-                getP2Avatar().queue(newCharacter);
-                contadorPersonajes ++;
+                auxSkill = random.nextInt(41) + 10;    // Entre 10 y 50
+                auxLife = random.nextInt(201) + 100;  // Entre 100 y 300
+                auxStrength = random.nextInt(401) + 100;  // Entre 100 y 500
+                auxAgility = random.nextInt(151) + 50;   // Entre 50 y 200
                 break;
-            default:
-                getP3Avatar().queue(newCharacter);
-                contadorPersonajes ++;
+
+            default: // Prioridad 3
+                auxSkill = random.nextInt(26);  // Entre 0 y 25
+                auxLife = random.nextInt(101);  // Entre 0 y 100
+                auxStrength = random.nextInt(201);  // Entre 0 y 200
+                auxAgility = random.nextInt(101);   // Entre 0 y 100
                 break;
         }
-    } else {
-        int auxPosition = random.nextInt(5);
-        newCharacter = new Characters("U" + getIdUSM(), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.usmImgCharacters[auxPosition]);
-        System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
-        setIdUSM(getIdUSM() + 1);
-        switch (auxPriority) {
-            case 1:
-                getP1USM().queue(newCharacter);
-                contadorPersonajes ++;
-                break;
-            case 2:
-                getP2USM().queue(newCharacter);
-                contadorPersonajes ++;
-                break;
-            default:
-                getP3USM().queue(newCharacter);
-                contadorPersonajes ++;
-                break;
+
+        // Crear personaje
+        Characters newCharacter;
+        int contadorPersonajes = 0;//Este contador es para que cuando llegue a cierta cantidad, poner el thread a dormir
+        if ("A".equals(character)) {
+            int auxPosition = random.nextInt(5);
+            newCharacter = new Characters("A" + getIdAvatar(), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.avatarImgCharacters[auxPosition]);
+            System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
+            setIdAvatar(getIdAvatar() + 1);
+            switch (auxPriority) {
+                case 1:
+                    getP1Avatar().queue(newCharacter);
+                    contadorPersonajes ++;
+                    break;
+                case 2:
+                    getP2Avatar().queue(newCharacter);
+                    contadorPersonajes ++;
+                    break;
+                default:
+                    getP3Avatar().queue(newCharacter);
+                    contadorPersonajes ++;
+                    break;
+            }
+        } else {
+            int auxPosition = random.nextInt(5);
+            newCharacter = new Characters("U" + getIdUSM(), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.usmImgCharacters[auxPosition]);
+            System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
+            setIdUSM(getIdUSM() + 1);
+            switch (auxPriority) {
+                case 1:
+                    getP1USM().queue(newCharacter);
+                    contadorPersonajes ++;
+                    break;
+                case 2:
+                    getP2USM().queue(newCharacter);
+                    contadorPersonajes ++;
+                    break;
+                default:
+                    getP3USM().queue(newCharacter);
+                    contadorPersonajes ++;
+                    break;
+            }
+
         }
-        
-    }
 //        float auxSkill = (float) Math.random();
 //        float auxLife = (float) Math.random();
 //        float auxStrength = (float) Math.random();
@@ -328,9 +330,20 @@ public class Admin extends Thread{
             System.out.println("No se pudo obtener un personaje de cada serie para la prioridad 1.");
         }
     }
-//    public void printQueues(){
-//        getP1Avatar().print();
-//    }
+    
+    //Esta funcion debe mostrar las colas en la interfaz y no hacer la logica desde la interfaz
+    public void mostrarColas(){
+        db.getTxtP1Avatar().setText(this.p1Avatar.print());
+        db.getTxtP1USM().setText(this.p1USM.print());
+        db.getTxtP2Avatar().setText(this.p2Avatar.print());
+        db.getTxtP2USM().setText(this.p2USM.print());
+        db.getTxtP3Avatar().setText(this.p3Avatar.print());
+        db.getTxtP3USM().setText(this.p3USM.print());
+        db.getTxtRefuerzosAvatar().setText(this.refuerzoAvatar.print());
+        db.getTxtRefuerzosUSM().setText(this.refuerzoUSM.print());
+        db.getTxtGanadores().setText(this.winners.print());
+             
+    }
     
     @Override
     public void run(){
@@ -338,14 +351,14 @@ public class Admin extends Thread{
             try{
                 sem.acquire();
                 if(cycles == 1){
-                    
                     createRandomCharacters();
+                    mostrarColas();
                     sendCharacters();
                     cycles--;
                 }else{
                     cycles++;
                 }
-                sleep(time * 1000);
+                sleep(time * 100);
                 sem.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);

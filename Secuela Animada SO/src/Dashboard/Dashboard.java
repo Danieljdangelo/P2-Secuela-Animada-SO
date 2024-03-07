@@ -29,7 +29,6 @@ public class Dashboard extends javax.swing.JFrame {
      * Creates new form Dashboard
      */
     
-    Queues queue = new Queues();
 //    Semaphore mainMutex = new Semaphore(1);
     private Semaphore sem;
     private Admin admin;
@@ -39,6 +38,7 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         this.setResizable(false);
         this.setLocationRelativeTo(null);
+        
     }
     
     public JTextPane getPanelAvatar(){
@@ -56,6 +56,48 @@ public class Dashboard extends javax.swing.JFrame {
     public JTextField getVictoriasUsmLabel(){
         return txtVictoriasUSM;
     }
+
+    public JTextField getTxtGanadores() {
+        return txtGanadores;
+    }
+
+    public JTextField getTxtP1Avatar() {
+        return txtP1Avatar;
+    }
+
+    public JTextField getTxtP1USM() {
+        return txtP1USM;
+    }
+
+    public JTextField getTxtP2Avatar() {
+        return txtP2Avatar;
+    }
+
+    public JTextField getTxtP2USM() {
+        return txtP2USM;
+    }
+
+    public JTextField getTxtP3Avatar() {
+        return txtP3Avatar;
+    }
+
+    public JTextField getTxtP3USM() {
+        return txtP3USM;
+    }
+
+    public JTextField getTxtRefuerzosAvatar() {
+        return txtRefuerzosAvatar;
+    }
+
+    public JTextField getTxtRefuerzosUSM() {
+        return txtRefuerzosUSM;
+    }
+
+    public JTextField getTxtVictoriasUSM() {
+        return txtVictoriasUSM;
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -462,10 +504,13 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_txtRefuerzosUSMActionPerformed
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
+        sem = new Semaphore(1);
+        
+        ai = new AI(sem, getSldDuracion().getValue(), this, admin);
+        admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
+        
         try{
-            sem = new Semaphore(1, true);
-            ai = new AI(sem, getSldDuracion().getValue(), this, admin);
-            admin = new Admin(sem, 20, ai, getSldDuracion().getValue());
+            
             
             while(true){
                 sem.acquire();
@@ -490,20 +535,20 @@ public class Dashboard extends javax.swing.JFrame {
 //                sleep(2000);
                 sem.release();
                 
-                sem.acquire();
-                txtP1Avatar.setText(admin.getP1Avatar().print());
-                txtP2Avatar.setText(admin.getP2Avatar().print());
-                txtP3Avatar.setText(admin.getP3Avatar().print());
-                txtRefuerzosAvatar.setText(admin.getRefuerzoAvatar().print());
-                txtP1USM.setText(admin.getP1USM().print());
-                txtP2USM.setText(admin.getP2USM().print());
-                txtP3USM.setText(admin.getP3USM().print());
-                txtRefuerzosUSM.setText(admin.getRefuerzoUSM().print());
-                txtGanadores.setText(admin.getWinners().print());
-                txtVictoriasAvatar.setText(Integer.toString(admin.getAvatarWinners()));
-                txtVictoriasUSM.setText(Integer.toString(admin.getUsmWinners()));
-                
-                sem.release();
+//                sem.acquire();
+//                txtP1Avatar.setText(admin.getP1Avatar().print());
+//                txtP2Avatar.setText(admin.getP2Avatar().print());
+//                txtP3Avatar.setText(admin.getP3Avatar().print());
+//                txtRefuerzosAvatar.setText(admin.getRefuerzoAvatar().print());
+//                txtP1USM.setText(admin.getP1USM().print());
+//                txtP2USM.setText(admin.getP2USM().print());
+//                txtP3USM.setText(admin.getP3USM().print());
+//                txtRefuerzosUSM.setText(admin.getRefuerzoUSM().print());
+//                txtGanadores.setText(admin.getWinners().print());
+//                txtVictoriasAvatar.setText(Integer.toString(admin.getAvatarWinners()));
+//                txtVictoriasUSM.setText(Integer.toString(admin.getUsmWinners()));
+//                
+//                sem.release();
             }
             
         }catch (InterruptedException ex) {
