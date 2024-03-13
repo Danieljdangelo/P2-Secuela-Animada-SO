@@ -14,6 +14,7 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -28,7 +29,6 @@ public class Dashboard extends javax.swing.JFrame {
      * Creates new form Dashboard
      */
     
-    Queues queue = new Queues();
 //    Semaphore mainMutex = new Semaphore(1);
     private Semaphore sem;
     private Admin admin;
@@ -38,6 +38,9 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         this.setResizable(false);
         this.setLocationRelativeTo(null);
+        this.sem = new Semaphore(1);
+        this.ai = new AI(sem, getSldDuracion().getValue(), this, admin);
+        this.admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
     }
     
     public JTextPane getPanelAvatar(){
@@ -47,6 +50,60 @@ public class Dashboard extends javax.swing.JFrame {
     public JTextPane getPanelUsm(){
         return infoUsm;
     }
+    
+    public JTextField getVictoriasAvatarLabel(){
+        return txtVictoriasAvatar;
+    }
+    
+    public JTextField getVictoriasUsmLabel(){
+        return txtVictoriasUSM;
+    }
+
+    public JTextField getTxtGanadores() {
+        return txtGanadores;
+    }
+
+    public JTextField getTxtP1Avatar() {
+        return txtP1Avatar;
+    }
+
+    public JTextField getTxtP1USM() {
+        return txtP1USM;
+    }
+
+    public JTextField getTxtP2Avatar() {
+        return txtP2Avatar;
+    }
+
+    public JTextField getTxtP2USM() {
+        return txtP2USM;
+    }
+
+    public JTextField getTxtP3Avatar() {
+        return txtP3Avatar;
+    }
+
+    public JTextField getTxtP3USM() {
+        return txtP3USM;
+    }
+
+    public JTextField getTxtRefuerzosAvatar() {
+        return txtRefuerzosAvatar;
+    }
+
+    public JTextField getTxtRefuerzosUSM() {
+        return txtRefuerzosUSM;
+    }
+
+    public JTextField getTxtVictoriasUSM() {
+        return txtVictoriasUSM;
+    }
+    
+    public JTextField getTxtDecisionIA(){
+        return txtDecisionIA;
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -376,9 +433,9 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(txtRefuerzosUSM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel16))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel10))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtVictoriasUSM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -453,50 +510,56 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_txtRefuerzosUSMActionPerformed
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        try{
-            sem = new Semaphore(1, true);
-            ai = new AI(sem, getSldDuracion().getValue(), this);
-            admin = new Admin(sem, 20, ai, getSldDuracion().getValue());
-            
+//        sem = new Semaphore(1);
+//        
+//        ai = new AI(sem, getSldDuracion().getValue(), this, admin);
+//        admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
+//        
+//        try{
+//            
+//             
             while(true){
-                sem.acquire();
-                ai.setStatus("Decidiendo");
-                txtDecisionIA.setText(ai.getStatus());
-//                sleep(2000);
-                sem.release();
-                
-                ai.start();
-                
-                sem.acquire();
-                ai.setStatus("Anunciando");
-                txtDecisionIA.setText(ai.getStatus());
-//                sleep(2000);
-                sem.release();
-                
+//                sem.acquire();
+//                ai.setStatus("Decidiendo");
+//                txtDecisionIA.setText(ai.getStatus());
+////                sleep(2000);
+//                sem.release();
+//                
+//                ai.start();
+//                
+//                sem.acquire();
+//                ai.setStatus("Anunciando");
+//                txtDecisionIA.setText(ai.getStatus());
+////                sleep(2000);
+//                sem.release();
+//                
                 admin.start();
+                ai.start();
+//                sem.acquire();
+//                ai.setStatus("Esperando");
+//                txtDecisionIA.setText(ai.getStatus());
+////                sleep(2000);
+//                sem.release();
                 
-                sem.acquire();
-                ai.setStatus("Esperando");
-                txtDecisionIA.setText(ai.getStatus());
-//                sleep(2000);
-                sem.release();
-                
-                sem.acquire();
-                txtP1Avatar.setText(admin.getP1Avatar().print());
-                txtP2Avatar.setText(admin.getP2Avatar().print());
-                txtP3Avatar.setText(admin.getP3Avatar().print());
-                txtRefuerzosAvatar.setText(admin.getRefuerzoAvatar().print());
-                txtP1USM.setText(admin.getP1USM().print());
-                txtP2USM.setText(admin.getP2USM().print());
-                txtP3USM.setText(admin.getP3USM().print());
-                txtRefuerzosUSM.setText(admin.getRefuerzoUSM().print());
-                
-                sem.release();
+//                sem.acquire();
+//                txtP1Avatar.setText(admin.getP1Avatar().print());
+//                txtP2Avatar.setText(admin.getP2Avatar().print());
+//                txtP3Avatar.setText(admin.getP3Avatar().print());
+//                txtRefuerzosAvatar.setText(admin.getRefuerzoAvatar().print());
+//                txtP1USM.setText(admin.getP1USM().print());
+//                txtP2USM.setText(admin.getP2USM().print());
+//                txtP3USM.setText(admin.getP3USM().print());
+//                txtRefuerzosUSM.setText(admin.getRefuerzoUSM().print());
+//                txtGanadores.setText(admin.getWinners().print());
+//                txtVictoriasAvatar.setText(Integer.toString(admin.getAvatarWinners()));
+//                txtVictoriasUSM.setText(Integer.toString(admin.getUsmWinners()));
+//                
+//                sem.release();
             }
             
-        }catch (InterruptedException ex) {
-            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        }catch (InterruptedException ex) {
+//            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_btnStartActionPerformed
 
     /**

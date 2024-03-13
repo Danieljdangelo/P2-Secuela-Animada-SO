@@ -8,6 +8,7 @@ import Dashboard.Dashboard;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -25,86 +26,103 @@ public class AI  extends Thread{
     private int result;
     private Semaphore sem;
     private Dashboard db;
+    private Admin admin;
     
-    public AI(Semaphore sem, int time, Dashboard db){
+    public AI(Semaphore sem, int time, Dashboard db, Admin admin){
         this.sem = sem;
         this.time = time;
         this.status = "Esperando";
         this.db = db;
+        this.admin = admin;
     }
     
-    public void caseCombat(Characters avatar, Characters usm){
-        if(avatar != null && usm != null){
+    public void caseCombat(){//despues de que sale un ganador, se para el programa.
+        if(this.avatar != null && this.usm != null){
             float probability = (float) Math.random();
-            if(probability >= 0.0 && probability < 0.4){
-                showCharactersInfo();
-                Characters combat = combat();
-                if(combat == avatar){
-                    result = 1; //Ganó avatar
-                }else{
-                    result = 2; //Ganó usm
+            if(/*probability >= 0.0 && */probability < 0.4){
+                Characters winners = combat();
+                if(winners != null){
+                    if(winners.equals(this.avatar)){
+                        result = 1; //Ganó avatar
+                        moveWinnerToWinnersQueue(this.avatar);
+                        this.admin.setAvatarWinners(this.admin.getAvatarWinners()+1);
+                        //Cuando gana avatar, hay que sacar al ganador de la cola de prioridad 1 y meterlo en la cola de ganadores
+                    }else{
+                        result = 2; //Ganó usm
+                        moveWinnerToWinnersQueue(this.usm);
+                        this.admin.setUsmWinners(this.admin.getUsmWinners()+1);
+                        //Cuando gana usm, hay que sacar al ganador de la cola de prioridad 1 y meterlo en la cola de ganadores junto a los ganadores de avatar
+                        }
+                    }else{
+                    System.out.println("Error en el combate, no se pudo determinar un ganador");
                 }
-            }else if(probability >= 0.4 && probability < 0.67){
-                result = 3; //Hay empate
-            }else{
-                result = 4; //No hay combate
-            }
+                }else if(probability >= 0.4 && probability < 0.67){
+                    result = 3; //Hay empate
+                    moveCharactersToPriorityQueues();
+
+                }else{
+                    result = 4; //No hay combate
+                    moveCharactersToRefuerzoQueues();
+                }
         }else{
             System.out.println("Los personajes son nulos en el case combat");
         }
     }
     
     public Characters combat(){
-        int pointsAvatar = 0;
-        int pointsUSM = 0;
+        int pointsAvatar = calculatePointsAvatar(this.avatar);
+        int pointsUSM = calculatePointsUsm(this.usm);
         
-        if(this.avatar.getSkill() > this.usm.getSkill()){
-            pointsAvatar++;
-        }else if(this.avatar.getSkill() < this.usm.getSkill()){
-            pointsUSM++;
-        }else{
-            pointsAvatar++;
-            pointsUSM++;
-        }
-        
-        if(this.avatar.getLife() > this.usm.getLife()){
-            pointsAvatar++;
-        }else if(this.avatar.getLife() < this.usm.getLife()){
-            pointsUSM++;
-        }else{
-            pointsAvatar++;
-            pointsUSM++;
-        }
-        
-        if(this.avatar.getStrength() > this.usm.getStrength()){
-            pointsAvatar++;
-        }else if(this.avatar.getStrength() < this.usm.getStrength()){
-            pointsUSM++;
-        }else{
-            pointsAvatar++;
-            pointsUSM++;
-        }
-        
-        if(this.avatar.getAgility() > this.usm.getAgility()){
-            pointsAvatar++;
-        }else if(this.avatar.getAgility() < this.usm.getAgility()){
-            pointsUSM++;
-        }else{
-            pointsAvatar++;
-            pointsUSM++;
-        }
+//        if(this.avatar.getSkill() > this.usm.getSkill()){
+//            pointsAvatar++;
+//        }else if(this.avatar.getSkill() < this.usm.getSkill()){
+//            pointsUSM++;
+//        }else{
+//            pointsAvatar++;
+//            pointsUSM++;
+//        }
+//        
+//        if(this.avatar.getLife() > this.usm.getLife()){
+//            pointsAvatar++;
+//        }else if(this.avatar.getLife() < this.usm.getLife()){
+//            pointsUSM++;
+//        }else{
+//            pointsAvatar++;
+//            pointsUSM++;
+//        }
+//        
+//        if(this.avatar.getStrength() > this.usm.getStrength()){
+//            pointsAvatar++;
+//        }else if(this.avatar.getStrength() < this.usm.getStrength()){
+//            pointsUSM++;
+//        }else{
+//            pointsAvatar++;
+//            pointsUSM++;
+//        }
+//        
+//        if(this.avatar.getAgility() > this.usm.getAgility()){
+//            pointsAvatar++;
+//        }else if(this.avatar.getAgility() < this.usm.getAgility()){
+//            pointsUSM++;
+//        }else{
+//            pointsAvatar++;
+//            pointsUSM++;
+//        }
         
         if(pointsAvatar > pointsUSM){
+            JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + avatar.getInfo());
             return avatar; //Ganó avatar
         }else if(pointsAvatar < pointsUSM){
-            return usm;
+            JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + usm.getInfo());
+            return usm; //Ganó usm
         }else{
-            int random = (int) (Math.random() * 2); // random entre 0 y 1
-            if (random == 0){
-                return avatar;
-            }else{
-                return usm;
-            }
+            return null;
+//            int random = (int) (Math.random() * 2); // random entre 0 y 1
+//            if (random == 0){
+//                return avatar;
+//            }else{
+//                return usm;
+//            }
         }
 //            int random = (int) (Math.floor(Math.random() * (2 - 1 + 1) + 1));
 //            if(random == 1){
@@ -118,26 +136,49 @@ public class AI  extends Thread{
 //        
    }
     
+    private int calculatePointsAvatar(Characters character){
+        // Calcula los puntos del personaje basados en sus atributos
+        int points = 0;
+        points += (character.getSkill() > this.usm.getSkill()) ? 1 : 0;
+        points += (character.getLife() > this.usm.getLife()) ? 1 : 0;
+        points += (character.getStrength() > this.usm.getStrength()) ? 1 : 0;
+        points += (character.getAgility() > this.usm.getAgility()) ? 1 : 0;
+        return points;
+    }
+    
+    private int calculatePointsUsm(Characters character){
+        // Calcula los puntos del personaje basados en sus atributos
+        int points = 0;
+        points += (character.getSkill() > this.avatar.getSkill()) ? 1 : 0;
+        points += (character.getLife() > this.avatar.getLife()) ? 1 : 0;
+        points += (character.getStrength() > this.avatar.getStrength()) ? 1 : 0;
+        points += (character.getAgility() > this.avatar.getAgility()) ? 1 : 0;
+        return points;
+    }
+    
     @Override
     public void run(){
         while(true){
             try{
-//                sem.acquire();
+                mostrarEstatus("Decidiendo.");
+                sem.acquire();
+                caseCombat();
+                mostrarEstatus("Anunciando.");
                 showCharactersInfo();
-                caseCombat(avatar, usm);
-                sleep(time * 1000);
-//                sem.release();
+                mostrarEstatus("Duermiendo.");
+                sleep(time * 100);
+                sem.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(AI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-//Hay error porque no está recibiendo los characters, puede que no se estén creando los nodos
-    public void reciveCharacters(Characters avatar, Characters usm){
-        setAvatar(avatar);
-        setUsm(usm);
+//Este método es llamado por el admin para asignarle los primeros de cada cola de prioridad a la ia
+    public void receiveCharacters(Characters avatar, Characters usm){
+        this.setAvatar(avatar);
+        this.setUsm(usm);
     }
-    
+//Este metodo muestra en los paneles, la informacion de los personajes que están en la arena    
     public void showCharactersInfo(){
         if (avatar != null && usm != null) {
             db.getPanelAvatar().setText(this.avatar.getInfo());
@@ -147,6 +188,36 @@ public class AI  extends Thread{
             }
     }
     
+    public void cleanText(){
+        System.out.println("Se estan limpiando los paneles");
+        db.getPanelAvatar().setText("");
+        db.getPanelUsm().setText("");
+    }
+    
+    private void moveWinnerToWinnersQueue(Characters winner) {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
+    this.admin.getP1Avatar().dequeue();
+    this.admin.getP1USM().dequeue();
+    this.admin.getWinners().queue(winner);
+    }
+    
+    private void moveCharactersToPriorityQueues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
+    this.admin.getP1Avatar().dequeue();
+    this.admin.getP1USM().dequeue();
+    this.admin.getP1Avatar().queue(this.avatar);
+    this.admin.getP1USM().queue(this.usm);
+    }
+    
+    private void moveCharactersToRefuerzoQueues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
+    this.admin.getP1Avatar().dequeue();
+    this.admin.getRefuerzoAvatar().queue(this.avatar);
+    this.admin.getP1USM().dequeue();
+    this.admin.getRefuerzoUSM().queue(this.usm);
+    }
+    
+    //Esta funcion debería mostrar el estatus de la ia
+    public void mostrarEstatus(String estatus){
+        this.db.getTxtDecisionIA().setText(estatus);
+    }
     /**
      * @return the time
      */
