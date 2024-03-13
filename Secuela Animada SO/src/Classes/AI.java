@@ -36,7 +36,7 @@ public class AI  extends Thread{
         this.admin = admin;
     }
     
-    public void caseCombat(){
+    public void caseCombat(){//despues de que sale un ganador, se para el programa.
         if(this.avatar != null && this.usm != null){
             float probability = (float) Math.random();
             if(/*probability >= 0.0 && */probability < 0.4){
@@ -160,9 +160,12 @@ public class AI  extends Thread{
     public void run(){
         while(true){
             try{
+                mostrarEstatus("Decidiendo.");
                 sem.acquire();
-                showCharactersInfo();
                 caseCombat();
+                mostrarEstatus("Anunciando.");
+                showCharactersInfo();
+                mostrarEstatus("Duermiendo.");
                 sleep(time * 100);
                 sem.release();
             }catch (InterruptedException ex) {
@@ -171,7 +174,7 @@ public class AI  extends Thread{
         }
     }
 //Este método es llamado por el admin para asignarle los primeros de cada cola de prioridad a la ia
-    public void reciveCharacters(Characters avatar, Characters usm){
+    public void receiveCharacters(Characters avatar, Characters usm){
         this.setAvatar(avatar);
         this.setUsm(usm);
     }
@@ -191,20 +194,20 @@ public class AI  extends Thread{
         db.getPanelUsm().setText("");
     }
     
-    private void moveWinnerToWinnersQueue(Characters winner) {
+    private void moveWinnerToWinnersQueue(Characters winner) {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
     this.admin.getP1Avatar().dequeue();
     this.admin.getP1USM().dequeue();
     this.admin.getWinners().queue(winner);
     }
     
-    private void moveCharactersToPriorityQueues() {
+    private void moveCharactersToPriorityQueues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
     this.admin.getP1Avatar().dequeue();
     this.admin.getP1USM().dequeue();
     this.admin.getP1Avatar().queue(this.avatar);
     this.admin.getP1USM().queue(this.usm);
     }
     
-    private void moveCharactersToRefuerzoQueues() {
+    private void moveCharactersToRefuerzoQueues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
     this.admin.getP1Avatar().dequeue();
     this.admin.getRefuerzoAvatar().queue(this.avatar);
     this.admin.getP1USM().dequeue();
@@ -212,16 +215,8 @@ public class AI  extends Thread{
     }
     
     //Esta funcion debería mostrar el estatus de la ia
-    public String mostrarEstatus(){
-        String estatus;
-        if(this.isAlive()){
-           estatus = "Decidiendo.";
-        }else if(!this.isAlive()){
-            estatus = "Anunciando.";
-        }else{
-            estatus = "Esperando.";
-        }
-        return estatus;
+    public void mostrarEstatus(String estatus){
+        this.db.getTxtDecisionIA().setText(estatus);
     }
     /**
      * @return the time

@@ -38,7 +38,9 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         this.setResizable(false);
         this.setLocationRelativeTo(null);
-        
+        this.sem = new Semaphore(1);
+        this.ai = new AI(sem, getSldDuracion().getValue(), this, admin);
+        this.admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
     }
     
     public JTextPane getPanelAvatar(){
@@ -95,6 +97,10 @@ public class Dashboard extends javax.swing.JFrame {
 
     public JTextField getTxtVictoriasUSM() {
         return txtVictoriasUSM;
+    }
+    
+    public JTextField getTxtDecisionIA(){
+        return txtDecisionIA;
     }
     
     
@@ -504,36 +510,36 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_txtRefuerzosUSMActionPerformed
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        sem = new Semaphore(1);
-        
-        ai = new AI(sem, getSldDuracion().getValue(), this, admin);
-        admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
-        
-        try{
-            
-            
+//        sem = new Semaphore(1);
+//        
+//        ai = new AI(sem, getSldDuracion().getValue(), this, admin);
+//        admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
+//        
+//        try{
+//            
+//             
             while(true){
-                sem.acquire();
-                ai.setStatus("Decidiendo");
-                txtDecisionIA.setText(ai.getStatus());
-//                sleep(2000);
-                sem.release();
-                
-                ai.start();
-                
-                sem.acquire();
-                ai.setStatus("Anunciando");
-                txtDecisionIA.setText(ai.getStatus());
-//                sleep(2000);
-                sem.release();
-                
+//                sem.acquire();
+//                ai.setStatus("Decidiendo");
+//                txtDecisionIA.setText(ai.getStatus());
+////                sleep(2000);
+//                sem.release();
+//                
+//                ai.start();
+//                
+//                sem.acquire();
+//                ai.setStatus("Anunciando");
+//                txtDecisionIA.setText(ai.getStatus());
+////                sleep(2000);
+//                sem.release();
+//                
                 admin.start();
-                
-                sem.acquire();
-                ai.setStatus("Esperando");
-                txtDecisionIA.setText(ai.getStatus());
-//                sleep(2000);
-                sem.release();
+                ai.start();
+//                sem.acquire();
+//                ai.setStatus("Esperando");
+//                txtDecisionIA.setText(ai.getStatus());
+////                sleep(2000);
+//                sem.release();
                 
 //                sem.acquire();
 //                txtP1Avatar.setText(admin.getP1Avatar().print());
@@ -551,9 +557,9 @@ public class Dashboard extends javax.swing.JFrame {
 //                sem.release();
             }
             
-        }catch (InterruptedException ex) {
-            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        }catch (InterruptedException ex) {
+//            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_btnStartActionPerformed
 
     /**
