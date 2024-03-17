@@ -35,15 +35,17 @@ public class Dashboard extends javax.swing.JFrame {
     
 //    Semaphore mainMutex = new Semaphore(1);
     private Semaphore sem;
-    private Admin admin;
+//    private Admin admin;
+    public Admin admin;
     private AI ai;
+//    public AI ai;
     
     public Dashboard() {
         initComponents();
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.sem = new Semaphore(1);
-        this.ai = new AI(sem, getSldDuracion().getValue(), this, admin);
+//        this.ai = new AI(sem, getSldDuracion().getValue(), this, admin);
         this.admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
         
     }
@@ -549,7 +551,7 @@ public class Dashboard extends javax.swing.JFrame {
 
                 admin.start();
 
-                ai.start();
+//                ai.start();
 
 //                sem.acquire();
 //                ai.setStatus("Anunciando");
@@ -557,7 +559,7 @@ public class Dashboard extends javax.swing.JFrame {
 //                sleep((getSldDuracion().getValue()/3) * 1000);
 //                sem.release();
 //                
-//                ai.start();
+                admin.ai.start();
                 
 //                sem.acquire();
 //                txtP1Avatar.setText(admin.getP1Avatar().print());

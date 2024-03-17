@@ -44,13 +44,16 @@ public class Admin extends Thread{
     private Semaphore sem;
     private int idAvatar;
     private int idUSM;
-    private AI ai;
+//    private AI ai;
+    public AI ai;
     private int time;
     private Dashboard db;
     String[] usmCharacters = new String[] {"Mordecai", "Rigby", "Benson", "Skips", "Musculoso"};
     String[] avatarCharacters = new String[] {"Aang", "Katara", "Sokka", "Zuko", "Iroh"};
     String[] usmImgCharacters = new String[] {"/Images/Mordecai.png", "/Images/Rigby.png", "/Images/Benson.png", "/Images/Skips.png", "/Images/Musculoso.png"};
     String[] avatarImgCharacters = new String[] {"/Images/Aang.png", "/Images/Katara.png", "/Images/Sokka.png", "/Images/Zuko.png", "/Images/Iroh.png"};
+    
+//    AI ai = new AI(sem, db.getSldDuracion().getValue(), db, db.admin);
     
     public Admin(Semaphore sem, int nCharacters, AI ai, int time, Dashboard db){
         this.sem = sem;
@@ -70,9 +73,10 @@ public class Admin extends Thread{
         this.usmCounter = 0;
         this.idAvatar = 1;
         this.idUSM = 1;
-        this.ai = ai;
-        this.time = time;
         this.db = db;
+        this.ai = new AI(sem, db.getSldDuracion().getValue(), this.db, this);
+        this.time = time;
+        
         
         int counter = nCharacters;
         while (counter != 0){
@@ -378,6 +382,7 @@ public class Admin extends Thread{
     public void run(){
         while(true){
             try{
+//                ai.start();
 //                sem.acquire();
                 mostrarColas();
                 sendCharacters();
