@@ -173,24 +173,19 @@ public class AI  extends Thread{
     public void run(){
         while(true){
             try{
-//                mostrarEstatus("Decidiendo.");
                 
                 sem.acquire();
                 db.setSldDuracion(db.getSldDuracion());
-//                showCharactersInfo();
-//                this.admin.sendCharacters();
                 db.getTxtDecisionIA().setText("Esperando");
                 sleep((db.getSldDuracion().getValue()/3) * 1000);
-//                mostrarEstatus("Anunciando.");
                 db.getTxtDecisionIA().setText("Decidiendo");
                 sleep((db.getSldDuracion().getValue()/3) * 1000);
-//                showCharactersInfo();
-//                mostrarEstatus("Duermiendo.");
                 db.getTxtDecisionIA().setText("Anunciando");
                 sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
                 caseCombat(this.avatar, this.usm);
                 sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
                 db.getResultsPane().setText("");
+                cleanText();
                 sem.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(AI.class.getName()).log(Level.SEVERE, null, ex);
@@ -218,7 +213,6 @@ public class AI  extends Thread{
             JLabel usmLabel = new JLabel(usmImage);
             db.getImgUSM().removeAll(); // Limpiar cualquier componente previo
             db.getImgUSM().add(usmLabel);
-//            JOptionPane.showMessageDialog(null, this.avatar.getInfo() + "\n" + this.avatar.getPath());
             db.getImgAvatar().add(ImageAvatar).repaint();
             db.getImgUSM().add(ImageUSM).repaint();
         } else {
@@ -230,6 +224,9 @@ public class AI  extends Thread{
         System.out.println("Se estan limpiando los paneles");
         db.getPanelAvatar().setText("");
         db.getPanelUsm().setText("");
+        db.getImgUSM().removeAll();
+        db.getImgAvatar().removeAll();
+        
     }
     
     private void moveWinnerToWinnersQueue(Characters winner) {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
