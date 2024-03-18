@@ -9,15 +9,19 @@ import Classes.Admin;
 import Classes.Queues;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import static java.lang.Thread.sleep;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.Timer;
 
 /**
  *
@@ -31,16 +35,19 @@ public class Dashboard extends javax.swing.JFrame {
     
 //    Semaphore mainMutex = new Semaphore(1);
     private Semaphore sem;
-    private Admin admin;
+//    private Admin admin;
+    public Admin admin;
     private AI ai;
+//    public AI ai;
     
     public Dashboard() {
         initComponents();
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.sem = new Semaphore(1);
-        this.ai = new AI(sem, getSldDuracion().getValue(), this, admin);
+//        this.ai = new AI(sem, getSldDuracion().getValue(), this, admin);
         this.admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
+        
     }
     
     public JTextPane getPanelAvatar(){
@@ -52,7 +59,7 @@ public class Dashboard extends javax.swing.JFrame {
     }
     
     public JTextField getVictoriasAvatarLabel(){
-        return txtVictoriasAvatar;
+        return getTxtVictoriasAvatar();
     }
     
     public JTextField getVictoriasUsmLabel(){
@@ -147,11 +154,11 @@ public class Dashboard extends javax.swing.JFrame {
         infoAvatar = new javax.swing.JTextPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         infoUsm = new javax.swing.JTextPane();
-        imgAvatar = new javax.swing.JPanel();
-        imgUSM4 = new javax.swing.JPanel();
+        imgUSM = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        imgAvatar = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -262,30 +269,17 @@ public class Dashboard extends javax.swing.JFrame {
         infoUsm.setEditable(false);
         jScrollPane2.setViewportView(infoUsm);
 
-        imgAvatar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        imgUSM.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        javax.swing.GroupLayout imgAvatarLayout = new javax.swing.GroupLayout(imgAvatar);
-        imgAvatar.setLayout(imgAvatarLayout);
-        imgAvatarLayout.setHorizontalGroup(
-            imgAvatarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        javax.swing.GroupLayout imgUSMLayout = new javax.swing.GroupLayout(imgUSM);
+        imgUSM.setLayout(imgUSMLayout);
+        imgUSMLayout.setHorizontalGroup(
+            imgUSMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 162, Short.MAX_VALUE)
         );
-        imgAvatarLayout.setVerticalGroup(
-            imgAvatarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 150, Short.MAX_VALUE)
-        );
-
-        imgUSM4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        javax.swing.GroupLayout imgUSM4Layout = new javax.swing.GroupLayout(imgUSM4);
-        imgUSM4.setLayout(imgUSM4Layout);
-        imgUSM4Layout.setHorizontalGroup(
-            imgUSM4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 148, Short.MAX_VALUE)
-        );
-        imgUSM4Layout.setVerticalGroup(
-            imgUSM4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 150, Short.MAX_VALUE)
+        imgUSMLayout.setVerticalGroup(
+            imgUSMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 164, Short.MAX_VALUE)
         );
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -297,6 +291,19 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("Avatar: La Leyenda de Aang");
 
+        imgAvatar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        javax.swing.GroupLayout imgAvatarLayout = new javax.swing.GroupLayout(imgAvatar);
+        imgAvatar.setLayout(imgAvatarLayout);
+        imgAvatarLayout.setHorizontalGroup(
+            imgAvatarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 148, Short.MAX_VALUE)
+        );
+        imgAvatarLayout.setVerticalGroup(
+            imgAvatarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 163, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -304,11 +311,11 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(419, 419, 419)
-                        .addComponent(txtGanadores, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(541, 541, 541)
-                        .addComponent(btnStart)))
+                        .addComponent(btnStart))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(419, 419, 419)
+                        .addComponent(txtGanadores, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(37, 37, 37)
@@ -319,7 +326,7 @@ public class Dashboard extends javax.swing.JFrame {
                     .addComponent(jLabel15))
                 .addGap(766, 766, 766)
                 .addComponent(jLabel4)
-                .addContainerGap(319, Short.MAX_VALUE))
+                .addContainerGap(352, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(181, 181, 181)
                 .addComponent(jLabel16)
@@ -333,8 +340,14 @@ public class Dashboard extends javax.swing.JFrame {
                 .addComponent(txtVictoriasUSM, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(179, 179, 179))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(txtDecisionIA, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap(516, Short.MAX_VALUE)
+                        .addComponent(txtDecisionIA, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(435, 435, 435)
+                        .addComponent(imgAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(154, 154, 154)
@@ -371,9 +384,7 @@ public class Dashboard extends javax.swing.JFrame {
                                             .addGap(50, 50, 50)
                                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel2Layout.createSequentialGroup()
-                                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                        .addComponent(imgAvatar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                     .addGap(18, 18, 18)
                                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                         .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -381,7 +392,7 @@ public class Dashboard extends javax.swing.JFrame {
                                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                                             .addGap(18, 18, 18)
-                                                            .addComponent(imgUSM4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                            .addComponent(imgUSM, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                                             .addGap(18, 18, 18)
                                                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))))
@@ -412,19 +423,25 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(jLabel4))
-                .addGap(13, 13, 13)
-                .addComponent(txtP1USM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel13))
-                .addGap(18, 18, 18)
-                .addComponent(txtP2USM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel14))
-                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(13, 13, 13)
+                        .addComponent(txtP1USM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel13))
+                        .addGap(18, 18, 18)
+                        .addComponent(txtP2USM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel14))
+                        .addGap(29, 29, 29))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(imgAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addComponent(txtP3USM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -440,7 +457,7 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtVictoriasUSM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtVictoriasAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
                 .addComponent(txtGanadores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnStart)
@@ -463,9 +480,7 @@ public class Dashboard extends javax.swing.JFrame {
                                     .addComponent(jLabel3))
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addGap(56, 56, 56)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(imgUSM4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(imgAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(imgUSM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGap(18, 18, 18)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
@@ -520,26 +535,31 @@ public class Dashboard extends javax.swing.JFrame {
 //             
             while(true){
 //                sem.acquire();
-//                ai.setStatus("Decidiendo");
+//                ai.setStatus("Esperando");
 //                txtDecisionIA.setText(ai.getStatus());
-////                sleep(2000);
+//                sleep((getSldDuracion().getValue()/3) * 1000);
 //                sem.release();
 //                
-//                ai.start();
+//                admin.start();
 //                
+//                sem.acquire();
+//                ai.setStatus("Decidiendo");
+//                txtDecisionIA.setText(ai.getStatus());
+//                sleep((getSldDuracion().getValue()/3) * 1000);
+//                sem.release();
+              
+
+                admin.start();
+
+//                ai.start();
+
 //                sem.acquire();
 //                ai.setStatus("Anunciando");
 //                txtDecisionIA.setText(ai.getStatus());
-////                sleep(2000);
+//                sleep((getSldDuracion().getValue()/3) * 1000);
 //                sem.release();
 //                
-                admin.start();
-                ai.start();
-//                sem.acquire();
-//                ai.setStatus("Esperando");
-//                txtDecisionIA.setText(ai.getStatus());
-////                sleep(2000);
-//                sem.release();
+                admin.ai.start();
                 
 //                sem.acquire();
 //                txtP1Avatar.setText(admin.getP1Avatar().print());
@@ -601,7 +621,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnStart;
     private javax.swing.JLabel duracionCombate;
     private javax.swing.JPanel imgAvatar;
-    private javax.swing.JPanel imgUSM4;
+    private javax.swing.JPanel imgUSM;
     private javax.swing.JTextPane infoAvatar;
     private javax.swing.JTextPane infoUsm;
     private javax.swing.JLabel jLabel1;
@@ -655,6 +675,8 @@ public class Dashboard extends javax.swing.JFrame {
             setOpaque(false);
             
             super.paint(g);
+            
+//            jPanel2 = new ImagePanel("/Images/Avatar_vs_USM.png");
         }
     }
 
@@ -664,5 +686,70 @@ public class Dashboard extends javax.swing.JFrame {
     public javax.swing.JSlider getSldDuracion() {
         return sldDuracion;
     }
+
+    /**
+     * @return the imgAvatar
+     */
+    public javax.swing.JPanel getImgAvatar() {
+        return imgAvatar;
+    }
+
+    /**
+     * @param imgAvatar the imgAvatar to set
+     */
+    public void setImgAvatar(javax.swing.JPanel imgAvatar) {
+        this.imgAvatar = imgAvatar;
+    }
+
+    /**
+     * @return the imgUSM
+     */
+    public javax.swing.JPanel getImgUSM() {
+        return imgUSM;
+    }
+
+    /**
+     * @param imgUSM the imgUSM to set
+     */
+    public void setImgUSM(javax.swing.JPanel imgUSM) {
+        this.imgUSM = imgUSM;
+    }
+
+//    /**
+//     * @return the imgAvatar
+//     */
+//    public javax.swing.JTextPane getImgAvatar() {
+//        return imgAvatar;
+//    }
+//
+//    /**
+//     * @param imgAvatar the imgAvatar to set
+//     */
+//    public void setImgAvatar(javax.swing.JTextPane imgAvatar) {
+//        this.imgAvatar = imgAvatar;
+//    }
+
+    /**
+     * @return the txtVictoriasAvatar
+     */
+    public javax.swing.JTextField getTxtVictoriasAvatar() {
+        return txtVictoriasAvatar;
+    }
+
+    /**
+     * @param txtVictoriasAvatar the txtVictoriasAvatar to set
+     */
+    public void setTxtVictoriasAvatar(javax.swing.JTextField txtVictoriasAvatar) {
+        this.txtVictoriasAvatar = txtVictoriasAvatar;
+    }
+
+    /**
+     * @param txtVictoriasUSM the txtVictoriasUSM to set
+     */
+    public void setTxtVictoriasUSM(javax.swing.JTextField txtVictoriasUSM) {
+        this.txtVictoriasUSM = txtVictoriasUSM;
+    }
+    
+    
 
 }

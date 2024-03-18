@@ -5,12 +5,16 @@
 package Classes;
 
 import Dashboard.Dashboard;
+import java.awt.Graphics;
+import java.awt.Image;
 import static java.lang.Math.random;
 import static java.lang.StrictMath.random;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 
 /**
  *
@@ -40,13 +44,16 @@ public class Admin extends Thread{
     private Semaphore sem;
     private int idAvatar;
     private int idUSM;
-    private AI ai;
+//    private AI ai;
+    public AI ai;
     private int time;
     private Dashboard db;
     String[] usmCharacters = new String[] {"Mordecai", "Rigby", "Benson", "Skips", "Musculoso"};
     String[] avatarCharacters = new String[] {"Aang", "Katara", "Sokka", "Zuko", "Iroh"};
     String[] usmImgCharacters = new String[] {"/Images/Mordecai.png", "/Images/Rigby.png", "/Images/Benson.png", "/Images/Skips.png", "/Images/Musculoso.png"};
     String[] avatarImgCharacters = new String[] {"/Images/Aang.png", "/Images/Katara.png", "/Images/Sokka.png", "/Images/Zuko.png", "/Images/Iroh.png"};
+    
+//    AI ai = new AI(sem, db.getSldDuracion().getValue(), db, db.admin);
     
     public Admin(Semaphore sem, int nCharacters, AI ai, int time, Dashboard db){
         this.sem = sem;
@@ -66,9 +73,10 @@ public class Admin extends Thread{
         this.usmCounter = 0;
         this.idAvatar = 1;
         this.idUSM = 1;
-        this.ai = ai;
-        this.time = time;
         this.db = db;
+        this.ai = new AI(sem, db.getSldDuracion().getValue(), this.db, this);
+        this.time = time;
+        
         
         int counter = nCharacters;
         while (counter != 0){
@@ -303,7 +311,7 @@ public class Admin extends Thread{
         if (!p1Avatar.isEmpty() && !p1USM.isEmpty()) {
             Characters avatarP1 = p1Avatar.dequeue();
             Characters usmP1 = p1USM.dequeue();
-            ai.receiveCharacters(avatarP1, usmP1); // Enviar los personajes a la IA
+            ai.receiveCharacters(avatarP1, usmP1);// Enviar los personajes a la IA
             System.out.println("Se recibieron los personajes de la cola de prioridad 1");
             this.ai.showCharactersInfo();
         }
@@ -367,25 +375,25 @@ public class Admin extends Thread{
         db.getTxtP3USM().setText(this.p3USM.print());
         db.getTxtRefuerzosAvatar().setText(this.refuerzoAvatar.print());
         db.getTxtRefuerzosUSM().setText(this.refuerzoUSM.print());
-        db.getTxtGanadores().setText(this.winners.print());
-             
+        db.getTxtGanadores().setText(this.winners.print()); 
     }
-    
+        
     @Override
     public void run(){
         while(true){
             try{
-                sem.acquire();
+//                ai.start();
+//                sem.acquire();
+                mostrarColas();
+                sendCharacters();
                 if(cycles == 1){
                     createRandomCharacters();
-                    mostrarColas();
-                    sendCharacters();
                     cycles--;
                 }else{
                     cycles++;
                 }
-                sleep(time * 100);
-                sem.release();
+                sleep(db.getSldDuracion().getValue() * 1000);
+//                sem.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
             }

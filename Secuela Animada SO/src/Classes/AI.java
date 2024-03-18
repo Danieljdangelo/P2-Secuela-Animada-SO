@@ -5,6 +5,7 @@
 package Classes;
 
 import Dashboard.Dashboard;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,8 @@ public class AI  extends Thread{
     private Dashboard db;
     private Admin admin;
     
+    private BufferedImage image;
+    
     public AI(Semaphore sem, int time, Dashboard db, Admin admin){
         this.sem = sem;
         this.time = time;
@@ -36,42 +39,58 @@ public class AI  extends Thread{
         this.admin = admin;
     }
     
-    public void caseCombat(){//despues de que sale un ganador, se para el programa.
+    public void caseCombat(Characters avatar, Characters usm){//despues de que sale un ganador, se para el programa.
+        
         if(this.avatar != null && this.usm != null){
             float probability = (float) Math.random();
-            if(/*probability >= 0.0 && */probability < 0.4){
-                Characters winners = combat();
-                if(winners != null){
-                    if(winners.equals(this.avatar)){
+            JOptionPane.showMessageDialog(null, probability);
+//            Characters winners = combat(avatar, usm);
+            
+            if(/*probability >= 0.0 && */probability <= 0.4){
+//                JOptionPane.showMessageDialog(null, "ENTRÓ");
+//                if(winners != null){
+////                    JOptionPane.showMessageDialog(null, "ENTRÓ");
+////                    if(winners.equals(this.avatar)){
+////                        JOptionPane.showMessageDialog(null, "ENTRÓ");
                         result = 1; //Ganó avatar
-                        moveWinnerToWinnersQueue(this.avatar);
-                        this.admin.setAvatarWinners(this.admin.getAvatarWinners()+1);
-                        //Cuando gana avatar, hay que sacar al ganador de la cola de prioridad 1 y meterlo en la cola de ganadores
-                    }else{
-                        result = 2; //Ganó usm
-                        moveWinnerToWinnersQueue(this.usm);
-                        this.admin.setUsmWinners(this.admin.getUsmWinners()+1);
-                        //Cuando gana usm, hay que sacar al ganador de la cola de prioridad 1 y meterlo en la cola de ganadores junto a los ganadores de avatar
-                        }
-                    }else{
-                    System.out.println("Error en el combate, no se pudo determinar un ganador");
-                }
-                }else if(probability >= 0.4 && probability < 0.67){
-                    result = 3; //Hay empate
-                    moveCharactersToPriorityQueues();
-
-                }else{
-                    result = 4; //No hay combate
-                    moveCharactersToRefuerzoQueues();
-                }
+                        combat(avatar, usm);
+////                        moveWinnerToWinnersQueue(this.avatar);
+////                        this.admin.setAvatarWinners(this.admin.getAvatarWinners()+1);
+//
+//                        //Cuando gana avatar, hay que sacar al ganador de la cola de prioridad 1 y meterlo en la cola de ganadores
+////                    }else{
+////                        JOptionPane.showMessageDialog(null, "ENTRÓ");
+////                        result = 2; //Ganó usm
+////                        moveWinnerToWinnersQueue(this.usm);
+////                        this.admin.setUsmWinners(this.admin.getUsmWinners()+1);
+//
+//                        //Cuando gana usm, hay que sacar al ganador de la cola de prioridad 1 y meterlo en la cola de ganadores junto a los ganadores de avatar
+////                        }
+//                    }else{
+//                    System.out.println("Error en el combate, no se pudo determinar un ganador");
+//                }
+            }else if(probability > 0.4 && probability <= 0.67){
+//                JOptionPane.showMessageDialog(null, "ENTRÓ");
+                result = 3; //Hay empate
+                combat(avatar, usm);
+//                moveCharactersToPriorityQueues();
+//                JOptionPane.showMessageDialog(null, "ENTRÓ");
+            }else{
+//                JOptionPane.showMessageDialog(null, "ENTRÓ");
+                result = 4; //No hay combate
+                combat(avatar, usm);
+//                moveCharactersToRefuerzoQueues();
+//                JOptionPane.showMessageDialog(null, "ENTRÓ");
+            }
         }else{
             System.out.println("Los personajes son nulos en el case combat");
         }
     }
     
-    public Characters combat(){
-        int pointsAvatar = calculatePointsAvatar(this.avatar);
-        int pointsUSM = calculatePointsUsm(this.usm);
+    public Characters combat(Characters avatar, Characters usm){
+        int pointsAvatar = calculatePointsAvatar(avatar);
+        int pointsUSM = calculatePointsUsm(usm);
+        Characters veredict = null;
         
 //        if(this.avatar.getSkill() > this.usm.getSkill()){
 //            pointsAvatar++;
@@ -108,22 +127,72 @@ public class AI  extends Thread{
 //            pointsAvatar++;
 //            pointsUSM++;
 //        }
-        
-        if(pointsAvatar > pointsUSM){
-            JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + avatar.getInfo());
-            return avatar; //Ganó avatar
-        }else if(pointsAvatar < pointsUSM){
-            JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + usm.getInfo());
-            return usm; //Ganó usm
+//        .
+
+        if(result == 1){
+            if(pointsAvatar > pointsUSM){
+                db.getTxtVictoriasAvatar().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasAvatar().getText()) + 1));
+                moveWinnerToWinnersQueue(this.avatar);
+                JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + avatar.getInfo());
+//                db.getTxtVictoriasAvatar().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasAvatar().getText()) + 1));
+                veredict =  avatar;
+            }else if(pointsUSM > pointsAvatar){
+                db.getTxtVictoriasUSM().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasUSM().getText()) + 1));
+                moveWinnerToWinnersQueue(this.usm);
+                JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + usm.getInfo());
+//                db.getTxtVictoriasUSM().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasUSM().getText()) + 1));
+                veredict = usm; 
+            }else{
+                JOptionPane.showMessageDialog(null, "Hubo un empate real"); //Solo es para validar
+                float probability = (float) Math.random();
+                if (probability < 0.5){
+                    db.getTxtVictoriasAvatar().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasAvatar().getText()) + 1));
+                    moveWinnerToWinnersQueue(this.avatar);
+                    JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + avatar.getInfo());
+                    veredict =  avatar;
+                }else{
+                    db.getTxtVictoriasUSM().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasUSM().getText()) + 1));
+                    moveWinnerToWinnersQueue(this.usm);
+                    JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + usm.getInfo());
+                    veredict = usm; 
+                }
+            }
+        }else if(result == 3){
+            moveCharactersToPriorityQueues();
+            JOptionPane.showMessageDialog(null, "Hubo un empate");
+            veredict =  null;
         }else{
-            return null;
+            moveCharactersToRefuerzoQueues();
+            JOptionPane.showMessageDialog(null, "No se puedo llevar a cabo el combate");
+            veredict =  null;
+        }
+        
+        
+        
+        
+        
+//        if(pointsAvatar > pointsUSM){
+//            JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + avatar.getInfo());
+//            db.getTxtVictoriasAvatar().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasAvatar().getText()) + 1));
+////            moveWinnerToWinnersQueue(avatar);
+//            return avatar; //Ganó avatar
+//        }else if(pointsAvatar < pointsUSM){
+//            JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + usm.getInfo());
+//            db.getTxtVictoriasUSM().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasUSM().getText()) + 1));
+////            moveWinnerToWinnersQueue(usm);
+//            return usm; //Ganó usm
+//        }else{
+//            JOptionPane.showMessageDialog(null, "Hubo un empate");
+//            return null;
+//        }
+//.
 //            int random = (int) (Math.random() * 2); // random entre 0 y 1
 //            if (random == 0){
 //                return avatar;
 //            }else{
 //                return usm;
 //            }
-        }
+//        
 //            int random = (int) (Math.floor(Math.random() * (2 - 1 + 1) + 1));
 //            if(random == 1){
 //                return avatar;
@@ -133,7 +202,7 @@ public class AI  extends Thread{
 //        }else{
 //            return usm;
 //        }
-//        
+        return veredict;
    }
     
     private int calculatePointsAvatar(Characters character){
@@ -160,13 +229,21 @@ public class AI  extends Thread{
     public void run(){
         while(true){
             try{
-                mostrarEstatus("Decidiendo.");
+//                mostrarEstatus("Decidiendo.");
+                
                 sem.acquire();
-                caseCombat();
-                mostrarEstatus("Anunciando.");
-                showCharactersInfo();
-                mostrarEstatus("Duermiendo.");
-                sleep(time * 100);
+//                showCharactersInfo();
+//                this.admin.sendCharacters();
+                db.getTxtDecisionIA().setText("Esperando");
+                sleep((db.getSldDuracion().getValue()/3) * 1000);
+//                mostrarEstatus("Anunciando.");
+                db.getTxtDecisionIA().setText("Decidiendo");
+                sleep((db.getSldDuracion().getValue()/3) * 1000);
+//                showCharactersInfo();
+//                mostrarEstatus("Duermiendo.");
+                db.getTxtDecisionIA().setText("Anunciando");
+                caseCombat(this.avatar, this.usm);
+                sleep((db.getSldDuracion().getValue()/3) * 1000);
                 sem.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(AI.class.getName()).log(Level.SEVERE, null, ex);
@@ -180,9 +257,14 @@ public class AI  extends Thread{
     }
 //Este metodo muestra en los paneles, la informacion de los personajes que están en la arena    
     public void showCharactersInfo(){
+        Images ImageAvatar = new Images(db.getImgAvatar(), this.avatar.getPath());
+        Images ImageUSM = new Images(db.getImgUSM(), this.usm.getPath());
         if (avatar != null && usm != null) {
             db.getPanelAvatar().setText(this.avatar.getInfo());
-            db.getPanelUsm().setText(this.usm.getInfo());
+            db.getPanelUsm().setText(this.usm.getInfo()); 
+//            JOptionPane.showMessageDialog(null, this.avatar.getInfo() + "\n" + this.avatar.getPath());
+            db.getImgAvatar().add(ImageAvatar).repaint();
+            db.getImgUSM().add(ImageUSM).repaint();
         } else {
             System.out.println("Al menos uno de los personajes es null");
             }
@@ -301,6 +383,7 @@ public class AI  extends Thread{
     public void setSem(Semaphore sem) {
         this.sem = sem;
     }
+    
     
     
 }
