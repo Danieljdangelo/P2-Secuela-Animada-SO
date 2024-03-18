@@ -384,6 +384,7 @@ public class Admin extends Thread{
             try{
 //                ai.start();
 //                sem.acquire();
+                db.setSldDuracion(db.getSldDuracion());
                 mostrarColas();
                 sendCharacters();
                 if(cycles == 1){
