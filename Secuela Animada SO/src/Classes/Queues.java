@@ -108,6 +108,16 @@ public class Queues {
         this.size = 0;
     }
     
+    public boolean contains(Characters character) {
+    Characters current = pHead;
+    while (current != null) {
+        if (current.equals(character)) {
+            return true;
+        }
+        current = current.getpNext();
+    }
+    return false;
+}
 //    public Object readHead(){
 //        return pHead.getData();
 //    }

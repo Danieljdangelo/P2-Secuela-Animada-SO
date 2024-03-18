@@ -173,7 +173,6 @@ public class AI  extends Thread{
     public void run(){
         while(true){
             try{
-                
                 sem.acquire();
                 db.setSldDuracion(db.getSldDuracion());
                 db.getTxtDecisionIA().setText("Esperando");
@@ -229,10 +228,32 @@ public class AI  extends Thread{
         
     }
     
-    private void moveWinnerToWinnersQueue(Characters winner) {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
-    this.admin.getP1Avatar().dequeue();
-    this.admin.getP1USM().dequeue();
-    this.admin.getWinners().queue(winner);
+    private void moveWinnerToWinnersQueue(Characters winner) {//Ahora desencola a los de cualquier cola, solo solo era P1
+        if (this.admin.getP1Avatar().contains(winner)) { // Si el ganador proviene de la cola P1Avatar
+            this.admin.getP1Avatar().dequeue(); // Quitarlo de la cola P1Avatar
+        } else if (this.admin.getP2Avatar().contains(winner)) { // Si el ganador proviene de la cola P2Avatar
+            this.admin.getP2Avatar().dequeue(); // Quitarlo de la cola P2Avatar
+        } else if (this.admin.getP3Avatar().contains(winner)) { // Si el ganador proviene de la cola P3Avatar
+            this.admin.getP3Avatar().dequeue(); // Quitarlo de la cola P3Avatar
+        } else if (this.admin.getRefuerzoAvatar().contains(winner)) { // Si el ganador proviene de la cola de refuerzos de Avatar
+            this.admin.getRefuerzoAvatar().dequeue(); // Quitarlo de la cola de refuerzos de Avatar
+        } else if (this.admin.getP1USM().contains(winner)) { // Si el ganador proviene de la cola P1USM
+            this.admin.getP1USM().dequeue(); // Quitarlo de la cola P1USM
+        } else if (this.admin.getP2USM().contains(winner)) { // Si el ganador proviene de la cola P2USM
+            this.admin.getP2USM().dequeue(); // Quitarlo de la cola P2USM
+        } else if (this.admin.getP3USM().contains(winner)) { // Si el ganador proviene de la cola P3USM
+            this.admin.getP3USM().dequeue(); // Quitarlo de la cola P3USM
+        } else if (this.admin.getRefuerzoUSM().contains(winner)) { // Si el ganador proviene de la cola de refuerzos de USM
+            this.admin.getRefuerzoUSM().dequeue(); // Quitarlo de la cola de refuerzos de USM
+        }
+        this.admin.getWinners().queue(winner); // Encolar al ganador en la cola de ganadores
+    
+        
+        
+//        Forma vieja de mover ganadores
+//        this.admin.getP1Avatar().dequeue();
+//        this.admin.getP1USM().dequeue();
+//        this.admin.getWinners().queue(winner);
     }
     
     private void moveCharactersToPriorityQueues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
