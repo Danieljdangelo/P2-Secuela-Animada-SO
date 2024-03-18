@@ -132,23 +132,37 @@ public class AI  extends Thread{
         if(result == 1){
             if(pointsAvatar > pointsUSM){
                 db.getTxtVictoriasAvatar().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasAvatar().getText()) + 1));
-//                moveWinnerToWinnersQueue(this.avatar);
+                moveWinnerToWinnersQueue(this.avatar);
                 JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + avatar.getInfo());
 //                db.getTxtVictoriasAvatar().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasAvatar().getText()) + 1));
                 veredict =  avatar;
             }else if(pointsUSM > pointsAvatar){
                 db.getTxtVictoriasUSM().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasUSM().getText()) + 1));
-//                moveWinnerToWinnersQueue(this.usm);
+                moveWinnerToWinnersQueue(this.usm);
                 JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + usm.getInfo());
 //                db.getTxtVictoriasUSM().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasUSM().getText()) + 1));
                 veredict = usm; 
+            }else{
+                JOptionPane.showMessageDialog(null, "Hubo un empate real"); //Solo es para validar
+                float probability = (float) Math.random();
+                if (probability < 0.5){
+                    db.getTxtVictoriasAvatar().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasAvatar().getText()) + 1));
+                    moveWinnerToWinnersQueue(this.avatar);
+                    JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + avatar.getInfo());
+                    veredict =  avatar;
+                }else{
+                    db.getTxtVictoriasUSM().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasUSM().getText()) + 1));
+                    moveWinnerToWinnersQueue(this.usm);
+                    JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + usm.getInfo());
+                    veredict = usm; 
+                }
             }
         }else if(result == 3){
-//            moveCharactersToPriorityQueues();
+            moveCharactersToPriorityQueues();
             JOptionPane.showMessageDialog(null, "Hubo un empate");
             veredict =  null;
         }else{
-//            moveCharactersToRefuerzoQueues();
+            moveCharactersToRefuerzoQueues();
             JOptionPane.showMessageDialog(null, "No se puedo llevar a cabo el combate");
             veredict =  null;
         }
