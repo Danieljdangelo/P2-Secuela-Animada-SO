@@ -100,44 +100,6 @@ public class AI  extends Thread{
         Characters veredict = null;
 
 
-        
-//        if(this.avatar.getSkill() > this.usm.getSkill()){
-//            pointsAvatar++;
-//        }else if(this.avatar.getSkill() < this.usm.getSkill()){
-//            pointsUSM++;
-//        }else{
-//            pointsAvatar++;
-//            pointsUSM++;
-//        }
-//        
-//        if(this.avatar.getLife() > this.usm.getLife()){
-//            pointsAvatar++;
-//        }else if(this.avatar.getLife() < this.usm.getLife()){
-//            pointsUSM++;
-//        }else{
-//            pointsAvatar++;
-//            pointsUSM++;
-//        }
-//        
-//        if(this.avatar.getStrength() > this.usm.getStrength()){
-//            pointsAvatar++;
-//        }else if(this.avatar.getStrength() < this.usm.getStrength()){
-//            pointsUSM++;
-//        }else{
-//            pointsAvatar++;
-//            pointsUSM++;
-//        }
-//        
-//        if(this.avatar.getAgility() > this.usm.getAgility()){
-//            pointsAvatar++;
-//        }else if(this.avatar.getAgility() < this.usm.getAgility()){
-//            pointsUSM++;
-//        }else{
-//            pointsAvatar++;
-//            pointsUSM++;
-//        }
-//        .
-
         if(result == 1){
             if(pointsAvatar > pointsUSM){
                 db.getTxtVictoriasAvatar().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasAvatar().getText()) + 1));
@@ -181,40 +143,7 @@ public class AI  extends Thread{
             db.getResultsPane().setText("Veredicto: No se puedo llevar a cabo el combate");
             veredict =  null;
         }
-        
-        
-        
-//        if(pointsAvatar > pointsUSM){
-//            JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + avatar.getInfo());
-//            db.getTxtVictoriasAvatar().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasAvatar().getText()) + 1));
-////            moveWinnerToWinnersQueue(avatar);
-//            return avatar; //Ganó avatar
-//        }else if(pointsAvatar < pointsUSM){
-//            JOptionPane.showMessageDialog(null, "El ganador de esta batalla es: \n" + usm.getInfo());
-//            db.getTxtVictoriasUSM().setText(Integer.toString(Integer.parseInt(db.getTxtVictoriasUSM().getText()) + 1));
-////            moveWinnerToWinnersQueue(usm);
-//            return usm; //Ganó usm
-//        }else{
-//            JOptionPane.showMessageDialog(null, "Hubo un empate");
-//            return null;
-//        }
-//.
-//            int random = (int) (Math.random() * 2); // random entre 0 y 1
-//            if (random == 0){
-//                return avatar;
-//            }else{
-//                return usm;
-//            }
-//        
-//            int random = (int) (Math.floor(Math.random() * (2 - 1 + 1) + 1));
-//            if(random == 1){
-//                return avatar;
-//            }else{
-//                return usm;
-//            }
-//        }else{
-//            return usm;
-//        }
+
         return veredict;
    }
     
