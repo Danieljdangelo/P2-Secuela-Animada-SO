@@ -15,6 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 //import javax.swing.Timer;
 import java.util.Timer;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 
 /**
@@ -206,7 +208,16 @@ public class AI  extends Thread{
         Images ImageUSM = new Images(db.getImgUSM(), this.usm.getPath());
         if (avatar != null && usm != null) {
             db.getPanelAvatar().setText(this.avatar.getInfo());
+            ImageIcon avatarImage = new ImageIcon(this.avatar.getImagePath());
+            JLabel avatarLabel = new JLabel(avatarImage);
+            db.getImgAvatar().removeAll(); // Limpiar cualquier componente previo
+            db.getImgAvatar().add(avatarLabel);
+            
             db.getPanelUsm().setText(this.usm.getInfo()); 
+            ImageIcon usmImage = new ImageIcon(this.usm.getImagePath());
+            JLabel usmLabel = new JLabel(usmImage);
+            db.getImgUSM().removeAll(); // Limpiar cualquier componente previo
+            db.getImgUSM().add(usmLabel);
 //            JOptionPane.showMessageDialog(null, this.avatar.getInfo() + "\n" + this.avatar.getPath());
             db.getImgAvatar().add(ImageAvatar).repaint();
             db.getImgUSM().add(ImageUSM).repaint();
