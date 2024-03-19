@@ -135,16 +135,85 @@ public class Queues {
 //        size++;
 //    }
     
-    public void queue(Characters data){
-        if(isEmpty()){
-            pHead = pTail = data;
+//    public void queue(Characters data){
+//        if(isEmpty()){
+//            pHead = pTail = data;
+//        }else{
+//            Characters pNew = pTail;
+//            pNew.setpNext(data);
+//            pTail = pNew.getpNext();
+//        }
+//        size++;
+//    }
+    
+    
+    
+    
+//    Sirve mejor que los otros
+    
+//    public void queue(Characters data){
+//        if (this.isEmpty()){
+//            this.setpHead(pTail = data);
+//        }else{
+//            this.getpTail().setpNext(data);
+//            this.setpTail(data);
+//        }
+//        this.setSize(this.getSize() + 1);
+//    }
+    
+        public void queue(Characters data){
+        if (this.isEmpty()){
+            this.setpHead(pTail = data);
+            this.setpTail(data);
         }else{
-            Characters pNew = pTail;
-            pNew.setpNext(data);
-            pTail = pNew.getpNext();
+            if(this.getpTail()== null){
+//                JOptionPane.showMessageDialog(null, "NULL");
+                return;
+            }
+            this.getpTail().setpNext(data);
+            this.setpTail(data);
         }
-        size++;
+        this.setSize(this.getSize() + 1);
     }
+    
+//    public void queue(Characters data){
+//        if (this.isEmpty()){
+//            this.setpHead(pTail = data);
+//        }else{
+//            Characters pNew = this.getpTail();
+//            pNew.setpNext(data);
+//            this.setpTail(data);
+//        }
+//        this.setSize(this.getSize() + 1);
+//    }
+//    
+    
+    
+    
+    
+    
+//    public void queue(Characters data){
+//        if(isEmpty()){
+//            pHead = pTail = data;
+//        }else{
+//            Characters pNew = data;
+//            pTail.setpNext(pNew);
+//            pNew.setpNext(null);
+//            pTail = pNew;
+//        }
+//        size++;
+//    }
+    
+//    public void queue(Characters data){
+//        Node pNew = new Node(data);
+//        if(isEmpty()){
+//            pHead = pTail = pNew.getData();
+////            Characters pNew = pTail;
+//            pTail.setpNext(pNew.getData());
+//            pTail = pNew.getData();
+//        }
+//        size++;
+//    }
     
 //    public void dequeue(){
 //        Node pTemp = pHead;
@@ -184,14 +253,81 @@ public class Queues {
             return "Vacía";
         }else{
             Characters pNew = pHead;
-            int auxSize = 0;
-            while(auxSize < size){
+//            int auxSize = 0;
+//            while(auxSize < size){
+            while(pNew != null){
                 cola += pNew.getId() + ", ";
+                if(pNew.getpNext() == null){
+                    break;
+                }
                 pNew = pNew.getpNext();
-                auxSize++;
+//                auxSize++;
+//            }
             }
         }
         return cola;
     }   
+    
+//    public void extractP2toP1(int num, Queues p1){
+//        while(!isEmpty()){
+//            Characters pTemp = getpHead();
+//                if(pTemp.getCounter() == 8){
+//                    pTemp = pTemp.getpNext();
+//                    p1.queue(pTemp);
+//    //                Characters nodeDequeue = dequeue();
+////                    pTemp = pTemp.getpNext();
+//                }else{
+//                    pTemp.setCounter(pTemp.getCounter() + 1);
+//                    queue(pTemp);
+////                    Characters nodeDequeue = dequeue();
+////                    queue(nodeDequeue);
+//                    pTemp = pTemp.getpNext();
+//                }
+////            }
+//        }
+//    }
+    
+    public void extractP2toP1(int num, Queues p1){
+        Characters actual = getpHead();
+        Characters anterior = null;
+        while(actual != null){
+            if(actual.getCounter() == 8){
+                if(anterior == null){
+                    setpHead(getpHead().getpNext());
+                }else{
+                    anterior.setpNext(actual.getpNext());
+                }
+                if(actual == getpTail()){
+                    setpTail(anterior);
+                }
+                p1.queue(actual);
+            }else{
+                actual.setCounter(actual.getCounter() + 1);
+                anterior = actual;
+            }
+            actual = actual.getpNext();
+        }
+    }
+    public void extractP3toP2(int num, Queues p2){
+        Characters actual = getpHead();
+        Characters anterior = null;
+        while(actual != null){
+            if(actual.getCounter() == 8){
+                if(anterior == null){
+                    setpHead(getpHead().getpNext());
+                }else{
+                    anterior.setpNext(actual.getpNext());
+                }
+                if(actual == getpTail()){
+                    setpTail(anterior);
+                }
+                p2.queue(actual);
+            }else{
+                actual.setCounter(actual.getCounter() + 1);
+                anterior = actual;
+            }
+            actual = actual.getpNext();
+        }
+    }
     
 }

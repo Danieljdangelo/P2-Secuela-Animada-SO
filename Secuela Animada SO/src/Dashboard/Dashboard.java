@@ -34,20 +34,24 @@ public class Dashboard extends javax.swing.JFrame {
      */
     
 //    Semaphore mainMutex = new Semaphore(1);
-    private Semaphore sem;
+    public Semaphore sem;
+    public Semaphore s;
+    public Semaphore mutex;
 //    private Admin admin;
     public Admin admin;
     private AI ai;
 //    public AI ai;
-    public int counter = 0;
+    private int counter = 0;
     
     public Dashboard() {
         initComponents();
         this.setResizable(false);
         this.setLocationRelativeTo(null);
-        this.sem = new Semaphore(1);
+        this.sem = new Semaphore(0);
+        this.s = new Semaphore(0);
+        this.mutex = new Semaphore(1);
 //        this.ai = new AI(sem, getSldDuracion().getValue(), this, admin);
-        this.admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
+        this.admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this, s, mutex);
         
     }
     
@@ -400,7 +404,7 @@ public class Dashboard extends javax.swing.JFrame {
 //                sleep((getSldDuracion().getValue()/3) * 1000);
 //                sem.release();
               
-
+                sem.release();
                 admin.start();
 
 //                ai.start();
@@ -623,6 +627,20 @@ public class Dashboard extends javax.swing.JFrame {
      */
     public void setResultsPane(javax.swing.JTextPane resultsPane) {
         this.resultsPane = resultsPane;
+    }
+
+    /**
+     * @return the counter
+     */
+    public int getCounter() {
+        return counter;
+    }
+
+    /**
+     * @param counter the counter to set
+     */
+    public void setCounter(int counter) {
+        this.counter = counter;
     }
     
     
