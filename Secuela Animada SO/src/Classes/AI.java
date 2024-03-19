@@ -171,9 +171,11 @@ public class AI  extends Thread{
                 }
             }
         }else if(result == 3){
-            moveCharactersToPriorityQueues();
+            returnCharactersToPriority1Queues();
 //            JOptionPane.showMessageDialog(null, "Hubo un empate");
             db.getResultsPane().setText("Veredicto: Hubo un empate");
+//            this.admin.getP1Avatar().queue(this.avatar);
+//            this.admin.getP1USM().queue(this.usm);
             veredict =  null;
         }else{
             moveCharactersToRefuerzoQueues();
@@ -251,13 +253,16 @@ public class AI  extends Thread{
                 db.getTxtDecisionIA().setText("Esperando");
                 sleep((db.getSldDuracion().getValue()/3) * 1000);
 //                mostrarEstatus("Anunciando.");
+                db.setSldDuracion(db.getSldDuracion());
                 db.getTxtDecisionIA().setText("Decidiendo");
                 sleep((db.getSldDuracion().getValue()/3) * 1000);
 //                showCharactersInfo();
 //                mostrarEstatus("Duermiendo.");
+                db.setSldDuracion(db.getSldDuracion());
                 db.getTxtDecisionIA().setText("Anunciando");
                 sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
                 caseCombat(this.avatar, this.usm);
+                db.setSldDuracion(db.getSldDuracion());
                 sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
                 db.getResultsPane().setText("");
                 sem.release();
@@ -299,6 +304,13 @@ public class AI  extends Thread{
     }
     
     private void moveCharactersToPriorityQueues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
+    this.admin.getP1Avatar().dequeue();
+    this.admin.getP1USM().dequeue();
+    this.admin.getP1Avatar().queue(this.avatar);
+    this.admin.getP1USM().queue(this.usm);
+    }
+    
+    private void returnCharactersToPriority1Queues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
     this.admin.getP1Avatar().dequeue();
     this.admin.getP1USM().dequeue();
     this.admin.getP1Avatar().queue(this.avatar);

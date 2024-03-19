@@ -384,7 +384,6 @@ public class Admin extends Thread{
             try{
 //                ai.start();
 //                sem.acquire();
-                db.setSldDuracion(db.getSldDuracion());
                 mostrarColas();
                 sendCharacters();
                 if(cycles == 1){
@@ -393,7 +392,8 @@ public class Admin extends Thread{
                 }else{
                     cycles++;
                 }
-                sleep(db.getSldDuracion().getValue() * 1000);
+                db.setSldDuracion(db.getSldDuracion());
+                sleep((db.getSldDuracion().getValue() * 1000)-1900);
 //                sem.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
