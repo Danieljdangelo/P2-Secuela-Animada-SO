@@ -167,15 +167,15 @@ public class Dashboard extends javax.swing.JFrame {
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         duracionCombate.setText("10");
-        jPanel2.add(duracionCombate, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 20, 43, -1));
+        jPanel2.add(duracionCombate, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, 43, -1));
 
         txtVictoriasAvatar.setEditable(false);
         txtVictoriasAvatar.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtVictoriasAvatar.setText("0");
-        jPanel2.add(txtVictoriasAvatar, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 550, 71, -1));
+        jPanel2.add(txtVictoriasAvatar, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 480, 71, -1));
 
         jLabel16.setText("Victorias");
-        jPanel2.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 530, -1, -1));
+        jPanel2.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 450, -1, -1));
 
         txtRefuerzosAvatar.setEditable(false);
         txtRefuerzosAvatar.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -210,7 +210,7 @@ public class Dashboard extends javax.swing.JFrame {
         jPanel2.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(37, 149, -1, -1));
 
         jLabel11.setText("Duración Combate:");
-        jPanel2.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 20, -1, -1));
+        jPanel2.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 20, -1, -1));
 
         sldDuracion.setMajorTickSpacing(1);
         sldDuracion.setMaximum(20);
@@ -225,20 +225,20 @@ public class Dashboard extends javax.swing.JFrame {
                 sldDuracionStateChanged(evt);
             }
         });
-        jPanel2.add(sldDuracion, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 30, 358, -1));
+        jPanel2.add(sldDuracion, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 40, 358, -1));
 
         txtGanadores.setEditable(false);
         txtGanadores.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtGanadores.setText("Vacío");
-        jPanel2.add(txtGanadores, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 720, 387, -1));
+        jPanel2.add(txtGanadores, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 680, 387, -1));
 
         txtVictoriasUSM.setEditable(false);
         txtVictoriasUSM.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtVictoriasUSM.setText("0");
-        jPanel2.add(txtVictoriasUSM, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 550, 71, -1));
+        jPanel2.add(txtVictoriasUSM, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 490, 71, -1));
 
         jLabel10.setText("Victorias");
-        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 530, -1, -1));
+        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 460, -1, -1));
 
         txtRefuerzosUSM.setEditable(false);
         txtRefuerzosUSM.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -268,11 +268,11 @@ public class Dashboard extends javax.swing.JFrame {
         txtDecisionIA.setEditable(false);
         txtDecisionIA.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtDecisionIA.setText("Está Durmiendo");
-        jPanel2.add(txtDecisionIA, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 120, 180, -1));
+        jPanel2.add(txtDecisionIA, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 120, 180, -1));
 
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("IA");
-        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 100, 23, -1));
+        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 100, 23, -1));
 
         btnStart.setText("Iniciar Combate");
         btnStart.addActionListener(new java.awt.event.ActionListener() {
@@ -280,10 +280,10 @@ public class Dashboard extends javax.swing.JFrame {
                 btnStartActionPerformed(evt);
             }
         });
-        jPanel2.add(btnStart, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 770, -1, -1));
+        jPanel2.add(btnStart, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 720, -1, -1));
 
         jLabel8.setText("Ganadores");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 700, -1, -1));
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 650, -1, -1));
 
         jLabel7.setText("Refuerzos");
         jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 390, -1, -1));
@@ -305,7 +305,7 @@ public class Dashboard extends javax.swing.JFrame {
         infoUsm.setEditable(false);
         jScrollPane2.setViewportView(infoUsm);
 
-        jPanel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(644, 354, 150, 130));
+        jPanel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 350, 150, 130));
 
         imgUSM.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -320,11 +320,11 @@ public class Dashboard extends javax.swing.JFrame {
             .addGap(0, 164, Short.MAX_VALUE)
         );
 
-        jPanel2.add(imgUSM, new org.netbeans.lib.awtextra.AbsoluteConstraints(644, 170, 150, -1));
+        jPanel2.add(imgUSM, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 170, 150, -1));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setText("VS");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(603, 221, -1, -1));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 220, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setText("Un Show Más");
@@ -351,7 +351,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         jScrollPane3.setViewportView(resultsPane);
 
-        jPanel2.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 500, 240, 180));
+        jPanel2.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 500, 240, 130));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -361,9 +361,7 @@ public class Dashboard extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 825, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 754, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
