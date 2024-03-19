@@ -125,7 +125,8 @@ public class Admin extends Thread{
         int contadorPersonajes = 0;//Este contador es para que cuando llegue a cierta cantidad, poner el thread a dormir
         if ("A".equals(character)) {
             int auxPosition = random.nextInt(5);
-            newCharacter = new Characters("A" + getIdAvatar(), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.avatarImgCharacters[auxPosition]);
+            String imagePath = this.avatarImgCharacters[auxPosition];
+            newCharacter = new Characters("A" + getIdAvatar(), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, imagePath);
             System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
             setIdAvatar(getIdAvatar() + 1);
             switch (auxPriority) {
@@ -144,7 +145,8 @@ public class Admin extends Thread{
             }
         } else {
             int auxPosition = random.nextInt(5);
-            newCharacter = new Characters("U" + getIdUSM(), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, this.usmImgCharacters[auxPosition]);
+            String imagePath = this.usmImgCharacters[auxPosition];
+            newCharacter = new Characters("U" + getIdUSM(), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, imagePath);
             System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
             setIdUSM(getIdUSM() + 1);
             switch (auxPriority) {

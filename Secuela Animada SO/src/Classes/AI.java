@@ -15,6 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 //import javax.swing.Timer;
 import java.util.Timer;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 
 /**
@@ -173,14 +175,11 @@ public class AI  extends Thread{
     public void run(){
         while(true){
             try{
-//                mostrarEstatus("Decidiendo.");
-                
                 sem.acquire();
                 db.setSldDuracion(db.getSldDuracion());
-//                showCharactersInfo();
-//                this.admin.sendCharacters();
                 db.getTxtDecisionIA().setText("Esperando");
                 sleep((db.getSldDuracion().getValue()/3) * 1000);
+<<<<<<< HEAD
 //                mostrarEstatus("Anunciando.");
                 db.setSldDuracion(db.getSldDuracion());
                 db.getTxtDecisionIA().setText("Decidiendo");
@@ -188,12 +187,17 @@ public class AI  extends Thread{
 //                showCharactersInfo();
 //                mostrarEstatus("Duermiendo.");
                 db.setSldDuracion(db.getSldDuracion());
+=======
+                db.getTxtDecisionIA().setText("Decidiendo");
+                sleep((db.getSldDuracion().getValue()/3) * 1000);
+>>>>>>> develop
                 db.getTxtDecisionIA().setText("Anunciando");
                 sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
                 caseCombat(this.avatar, this.usm);
                 db.setSldDuracion(db.getSldDuracion());
                 sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
                 db.getResultsPane().setText("");
+                cleanText();
                 sem.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(AI.class.getName()).log(Level.SEVERE, null, ex);
@@ -211,8 +215,16 @@ public class AI  extends Thread{
         Images ImageUSM = new Images(db.getImgUSM(), this.usm.getPath());
         if (avatar != null && usm != null) {
             db.getPanelAvatar().setText(this.avatar.getInfo());
+            ImageIcon avatarImage = new ImageIcon(this.avatar.getImagePath());
+            JLabel avatarLabel = new JLabel(avatarImage);
+            db.getImgAvatar().removeAll(); // Limpiar cualquier componente previo
+            db.getImgAvatar().add(avatarLabel);
+            
             db.getPanelUsm().setText(this.usm.getInfo()); 
-//            JOptionPane.showMessageDialog(null, this.avatar.getInfo() + "\n" + this.avatar.getPath());
+            ImageIcon usmImage = new ImageIcon(this.usm.getImagePath());
+            JLabel usmLabel = new JLabel(usmImage);
+            db.getImgUSM().removeAll(); // Limpiar cualquier componente previo
+            db.getImgUSM().add(usmLabel);
             db.getImgAvatar().add(ImageAvatar).repaint();
             db.getImgUSM().add(ImageUSM).repaint();
         } else {
@@ -224,12 +236,37 @@ public class AI  extends Thread{
         System.out.println("Se estan limpiando los paneles");
         db.getPanelAvatar().setText("");
         db.getPanelUsm().setText("");
+        db.getImgUSM().removeAll();
+        db.getImgAvatar().removeAll();
+        
     }
     
-    private void moveWinnerToWinnersQueue(Characters winner) {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
-    this.admin.getP1Avatar().dequeue();
-    this.admin.getP1USM().dequeue();
-    this.admin.getWinners().queue(winner);
+    private void moveWinnerToWinnersQueue(Characters winner) {//Ahora desencola a los de cualquier cola, solo solo era P1
+        if (this.admin.getP1Avatar().contains(winner)) { // Si el ganador proviene de la cola P1Avatar
+            this.admin.getP1Avatar().dequeue(); // Quitarlo de la cola P1Avatar
+        } else if (this.admin.getP2Avatar().contains(winner)) { // Si el ganador proviene de la cola P2Avatar
+            this.admin.getP2Avatar().dequeue(); // Quitarlo de la cola P2Avatar
+        } else if (this.admin.getP3Avatar().contains(winner)) { // Si el ganador proviene de la cola P3Avatar
+            this.admin.getP3Avatar().dequeue(); // Quitarlo de la cola P3Avatar
+        } else if (this.admin.getRefuerzoAvatar().contains(winner)) { // Si el ganador proviene de la cola de refuerzos de Avatar
+            this.admin.getRefuerzoAvatar().dequeue(); // Quitarlo de la cola de refuerzos de Avatar
+        } else if (this.admin.getP1USM().contains(winner)) { // Si el ganador proviene de la cola P1USM
+            this.admin.getP1USM().dequeue(); // Quitarlo de la cola P1USM
+        } else if (this.admin.getP2USM().contains(winner)) { // Si el ganador proviene de la cola P2USM
+            this.admin.getP2USM().dequeue(); // Quitarlo de la cola P2USM
+        } else if (this.admin.getP3USM().contains(winner)) { // Si el ganador proviene de la cola P3USM
+            this.admin.getP3USM().dequeue(); // Quitarlo de la cola P3USM
+        } else if (this.admin.getRefuerzoUSM().contains(winner)) { // Si el ganador proviene de la cola de refuerzos de USM
+            this.admin.getRefuerzoUSM().dequeue(); // Quitarlo de la cola de refuerzos de USM
+        }
+        this.admin.getWinners().queue(winner); // Encolar al ganador en la cola de ganadores
+    
+        
+        
+//        Forma vieja de mover ganadores
+//        this.admin.getP1Avatar().dequeue();
+//        this.admin.getP1USM().dequeue();
+//        this.admin.getWinners().queue(winner);
     }
     
     private void moveCharactersToPriorityQueues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
