@@ -193,6 +193,7 @@ public class AI  extends Thread{
                     sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
                     db.getResultsPane().setText("");
                     cleanText();
+//                    incrementarContadorPersonajes();
                     exitRefuerzoQueues(); 
 //                }
 //                db.counter = 0;
@@ -237,6 +238,32 @@ public class AI  extends Thread{
         db.getImgUSM().removeAll();
         db.getImgAvatar().removeAll();
         
+    }
+    
+    private void incrementarContadorPersonajes() {
+        // Incrementar el contador en la P2 de Avatar
+        Queues cola1 = admin.getP2Avatar();
+        incrementarContadorCola(cola1);
+
+        // Incrementar el contador en la P2 de Usm
+        Queues cola2 = admin.getP2USM();
+        incrementarContadorCola(cola2);
+
+        // Incrementar el contador en la P3 de Avatar
+        Queues cola3 = admin.getP3Avatar();
+        incrementarContadorCola(cola3);
+
+        // Incrementar el contador en la P3 de Usm
+        Queues cola4 = admin.getP3USM();
+        incrementarContadorCola(cola4);
+    }
+
+    private void incrementarContadorCola(Queues cola) {
+        Characters current = cola.getpHead();
+        while (current != null) {
+            current.incrementarContador();
+            current = current.getpNext();
+        }
     }
     
     private void moveWinnerToWinnersQueue(Characters winner) {//Ahora desencola a los de cualquier cola, solo solo era P1
