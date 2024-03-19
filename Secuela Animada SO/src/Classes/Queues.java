@@ -268,4 +268,66 @@ public class Queues {
         return cola;
     }   
     
+//    public void extractP2toP1(int num, Queues p1){
+//        while(!isEmpty()){
+//            Characters pTemp = getpHead();
+//                if(pTemp.getCounter() == 8){
+//                    pTemp = pTemp.getpNext();
+//                    p1.queue(pTemp);
+//    //                Characters nodeDequeue = dequeue();
+////                    pTemp = pTemp.getpNext();
+//                }else{
+//                    pTemp.setCounter(pTemp.getCounter() + 1);
+//                    queue(pTemp);
+////                    Characters nodeDequeue = dequeue();
+////                    queue(nodeDequeue);
+//                    pTemp = pTemp.getpNext();
+//                }
+////            }
+//        }
+//    }
+    
+    public void extractP2toP1(int num, Queues p1){
+        Characters actual = getpHead();
+        Characters anterior = null;
+        while(actual != null){
+            if(actual.getCounter() == 8){
+                if(anterior == null){
+                    setpHead(getpHead().getpNext());
+                }else{
+                    anterior.setpNext(actual.getpNext());
+                }
+                if(actual == getpTail()){
+                    setpTail(anterior);
+                }
+                p1.queue(actual);
+            }else{
+                actual.setCounter(actual.getCounter() + 1);
+                anterior = actual;
+            }
+            actual = actual.getpNext();
+        }
+    }
+    public void extractP3toP2(int num, Queues p2){
+        Characters actual = getpHead();
+        Characters anterior = null;
+        while(actual != null){
+            if(actual.getCounter() == 8){
+                if(anterior == null){
+                    setpHead(getpHead().getpNext());
+                }else{
+                    anterior.setpNext(actual.getpNext());
+                }
+                if(actual == getpTail()){
+                    setpTail(anterior);
+                }
+                p2.queue(actual);
+            }else{
+                actual.setCounter(actual.getCounter() + 1);
+                anterior = actual;
+            }
+            actual = actual.getpNext();
+        }
+    }
+    
 }

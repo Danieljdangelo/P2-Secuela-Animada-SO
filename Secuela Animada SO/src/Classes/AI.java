@@ -204,6 +204,8 @@ public class AI  extends Thread{
                     db.getResultsPane().setText("");
                     cleanText();
                     exitRefuerzoQueues(); 
+                    moveP2toP1();
+                    moveP3toP2();
 //                }
 //                admin.setCounterAdmin(0);
 //                db.setCounter(0); 
@@ -325,6 +327,16 @@ public class AI  extends Thread{
             }
         }
         
+    }
+    
+    public void moveP2toP1(){
+        this.admin.getP2Avatar().extractP2toP1(8, this.admin.getP1Avatar());
+        this.admin.getP2USM().extractP2toP1(8, this.admin.getP1USM());
+    }
+    
+    public void moveP3toP2(){
+        this.admin.getP3Avatar().extractP3toP2(8, this.admin.getP2Avatar());
+        this.admin.getP3USM().extractP3toP2(8, this.admin.getP2USM());
     }
     
     //Esta funcion debería mostrar el estatus de la ia
