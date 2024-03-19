@@ -135,9 +135,11 @@ public class AI  extends Thread{
                 }
             }
         }else if(result == 3){
-            moveCharactersToPriorityQueues();
+            returnCharactersToPriority1Queues();
 //            JOptionPane.showMessageDialog(null, "Hubo un empate");
             db.getResultsPane().setText("Veredicto: Hubo un empate");
+//            this.admin.getP1Avatar().queue(this.avatar);
+//            this.admin.getP1USM().queue(this.usm);
             veredict =  null;
         }else{
             moveCharactersToRefuerzoQueues();
@@ -174,17 +176,26 @@ public class AI  extends Thread{
         while(true){
             try{
                 sem.acquire();
-                db.setSldDuracion(db.getSldDuracion());
-                db.getTxtDecisionIA().setText("Esperando");
-                sleep((db.getSldDuracion().getValue()/3) * 1000);
-                db.getTxtDecisionIA().setText("Decidiendo");
-                sleep((db.getSldDuracion().getValue()/3) * 1000);
-                db.getTxtDecisionIA().setText("Anunciando");
-                sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
-                caseCombat(this.avatar, this.usm);
-                sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
-                db.getResultsPane().setText("");
-                cleanText();
+//                if(db.counter == 1){
+                    db.setSldDuracion(db.getSldDuracion());
+                    db.getTxtDecisionIA().setText("Esperando");
+                    sleep((db.getSldDuracion().getValue()/3) * 1000);
+                    db.setSldDuracion(db.getSldDuracion());
+                    db.getTxtDecisionIA().setText("Decidiendo");
+                    sleep((db.getSldDuracion().getValue()/3) * 1000);
+                    db.setSldDuracion(db.getSldDuracion());
+                    db.getTxtDecisionIA().setText("Decidiendo");
+                    sleep((db.getSldDuracion().getValue()/3) * 1000);
+                    db.getTxtDecisionIA().setText("Anunciando");
+                    sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
+                    caseCombat(this.avatar, this.usm);
+                    db.setSldDuracion(db.getSldDuracion());
+                    sleep(((db.getSldDuracion().getValue()/3) * 1000)/2);
+                    db.getResultsPane().setText("");
+                    cleanText();
+                    exitRefuerzoQueues(); 
+//                }
+//                db.counter = 0;
                 sem.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(AI.class.getName()).log(Level.SEVERE, null, ex);
@@ -263,11 +274,37 @@ public class AI  extends Thread{
     this.admin.getP1USM().queue(this.usm);
     }
     
+    private void returnCharactersToPriority1Queues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
+    this.admin.getP1Avatar().dequeue();
+    this.admin.getP1USM().dequeue();
+    this.admin.getP1Avatar().queue(this.avatar);
+    this.admin.getP1USM().queue(this.usm);
+    }
+    
     private void moveCharactersToRefuerzoQueues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
     this.admin.getP1Avatar().dequeue();
     this.admin.getRefuerzoAvatar().queue(this.avatar);
     this.admin.getP1USM().dequeue();
     this.admin.getRefuerzoUSM().queue(this.usm);
+    }
+    
+    public void exitRefuerzoQueues(){
+        float probability = (float) Math.random();
+//        JOptionPane.showMessageDialog(null, probability);
+        if(this.admin.getRefuerzoAvatar() != null && this.admin.getRefuerzoUSM() != null){
+            if (probability <= 0.4){
+                this.admin.getP1Avatar().queue(this.admin.getRefuerzoAvatar().getpHead());
+                this.admin.getRefuerzoAvatar().dequeue();
+                this.admin.getP1USM().queue(this.admin.getRefuerzoUSM().getpHead());
+                this.admin.getRefuerzoUSM().dequeue();
+            }else{
+                this.admin.getRefuerzoAvatar().queue(this.admin.getRefuerzoAvatar().getpHead());
+                this.admin.getRefuerzoAvatar().dequeue();
+                this.admin.getRefuerzoUSM().queue(this.admin.getRefuerzoUSM().getpHead());
+                this.admin.getRefuerzoUSM().dequeue();
+            }
+        }
+        
     }
     
     //Esta funcion debería mostrar el estatus de la ia
