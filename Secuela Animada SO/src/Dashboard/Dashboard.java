@@ -39,6 +39,7 @@ public class Dashboard extends javax.swing.JFrame {
     public Admin admin;
     private AI ai;
 //    public AI ai;
+    public int counter = 0;
     
     public Dashboard() {
         initComponents();

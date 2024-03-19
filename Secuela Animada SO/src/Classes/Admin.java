@@ -74,7 +74,7 @@ public class Admin extends Thread{
         this.idAvatar = 1;
         this.idUSM = 1;
         this.db = db;
-        this.ai = new AI(sem, db.getSldDuracion().getValue(), this.db, this);
+        this.ai = new AI(this.sem, db.getSldDuracion().getValue(), this.db, this);
         this.time = time;
         
         
@@ -230,18 +230,20 @@ public class Admin extends Thread{
     public void run(){
         while(true){
             try{
-//                ai.start();
 //                sem.acquire();
-                mostrarColas();
-                sendCharacters();
-                if(cycles == 1){
-                    createRandomCharacters();
-                    cycles--;
-                }else{
-                    cycles++;
-                }
-                db.setSldDuracion(db.getSldDuracion());
-                sleep((db.getSldDuracion().getValue() * 1000)-1900);
+//                if (db.counter == 0){
+                    mostrarColas();
+                    sendCharacters();
+                    if(cycles == 1){
+                        createRandomCharacters();
+                        cycles--;
+                    }else{
+                        cycles++;
+                    }
+                    db.setSldDuracion(db.getSldDuracion());
+//                }
+//                db.counter = 1;
+                sleep((db.getSldDuracion().getValue() * 1000));
 //                sem.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
