@@ -34,18 +34,22 @@ public class AI  extends Thread{
     public Characters usm;
     private int result;
     private Semaphore sem;
+    private Semaphore s;
+    private Semaphore mutex;
     private Dashboard db;
     private Admin admin;
     
     private BufferedImage image;
     
     
-    public AI(Semaphore sem, int time, Dashboard db, Admin admin){
+    public AI(Semaphore s, int time, Dashboard db, Admin admin, Semaphore sem, Semaphore mutex){
         this.sem = sem;
         this.time = time;
         this.status = "Esperando";
         this.db = db;
         this.admin = admin;
+        this.s = s;
+        this.mutex = mutex;
     }
     
     public void caseCombat(Characters avatar, Characters usm){//despues de que sale un ganador, se para el programa.
@@ -175,8 +179,14 @@ public class AI  extends Thread{
     public void run(){
         while(true){
             try{
-                sem.acquire();
-//                if(db.counter == 1){
+                
+                s.acquire();
+                
+//                sem.acquire(); //nuevo
+//                s.acquire();//nuevo
+                
+//                admin.sem.release();
+//                if(db.getCounter() == 1){
                     db.setSldDuracion(db.getSldDuracion());
                     db.getTxtDecisionIA().setText("Esperando");
                     sleep((db.getSldDuracion().getValue()/3) * 1000);
@@ -195,8 +205,18 @@ public class AI  extends Thread{
                     cleanText();
                     exitRefuerzoQueues(); 
 //                }
-//                db.counter = 0;
-                sem.release();
+//                admin.setCounterAdmin(0);
+//                db.setCounter(0); 
+//                admin.sem.acquire();
+//                sem.release();
+//                admin.mostrarColas();
+                
+//                s.release();//nuevo
+//                
+//                sem.release();
+//                s.acquire();
+
+                mutex.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(AI.class.getName()).log(Level.SEVERE, null, ex);
             }

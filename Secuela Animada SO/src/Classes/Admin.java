@@ -14,6 +14,7 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -41,7 +42,7 @@ public class Admin extends Thread{
     private Queues winners;
     private int avatarWinners;
     private int usmWinners;
-    private Semaphore sem;
+    public Semaphore sem;
     private int idAvatar;
     private int idUSM;
 //    private AI ai;
@@ -53,9 +54,12 @@ public class Admin extends Thread{
     String[] usmImgCharacters = new String[] {"/Images/Mordecai.png", "/Images/Rigby.png", "/Images/Benson.png", "/Images/Skips.png", "/Images/Musculoso.png"};
     String[] avatarImgCharacters = new String[] {"/Images/Aang.png", "/Images/Katara.png", "/Images/Sokka.png", "/Images/Zuko.png", "/Images/Iroh.png"};
     
+    public Semaphore mutex;
+    public Semaphore s;
+    private int counterAdmin = 0;
 //    AI ai = new AI(sem, db.getSldDuracion().getValue(), db, db.admin);
     
-    public Admin(Semaphore sem, int nCharacters, AI ai, int time, Dashboard db){
+    public Admin(Semaphore sem, int nCharacters, AI ai, int time, Dashboard db, Semaphore s, Semaphore mutex){
         this.sem = sem;
         this.p1Avatar = new Queues();
         this.p2Avatar = new Queues();
@@ -74,7 +78,9 @@ public class Admin extends Thread{
         this.idAvatar = 1;
         this.idUSM = 1;
         this.db = db;
-        this.ai = new AI(this.sem, db.getSldDuracion().getValue(), this.db, this);
+        this.s = s;
+        this.mutex = mutex;
+        this.ai = new AI(this.s, db.getSldDuracion().getValue(), this.db, this, this.sem, this.mutex);
         this.time = time;
         
         
@@ -230,10 +236,18 @@ public class Admin extends Thread{
     public void run(){
         while(true){
             try{
+                mutex.acquire();
+                        
+//                sem.acquire(); //Nuevo
+//                s.acquire(); //nuevo
+                
 //                sem.acquire();
-//                if (db.counter == 0){
+//                s.release();
+//                JOptionPane.showMessageDialog(null, db.getCounter() + "," + getCounterAdmin());
+//                if (db.getCounter() == 0 && getCounterAdmin() == 0){
                     mostrarColas();
                     sendCharacters();
+//                    sleep((db.getSldDuracion().getValue() * 1000));
                     if(cycles == 1){
                         createRandomCharacters();
                         cycles--;
@@ -242,9 +256,15 @@ public class Admin extends Thread{
                     }
                     db.setSldDuracion(db.getSldDuracion());
 //                }
-//                db.counter = 1;
-                sleep((db.getSldDuracion().getValue() * 1000));
+//                setCounterAdmin(1);
+//                db.setCounter(1);
+//                s.acquire();
 //                sem.release();
+
+//                sem.release(); //Nuevo
+                
+                s.release();
+//                sem.acquire();
             }catch (InterruptedException ex) {
                 Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -516,4 +536,20 @@ public class Admin extends Thread{
     public void setIdUSM(int idUSM) {
         this.idUSM = idUSM;
     }
+
+    /**
+     * @return the counterAdmin
+     */
+    public int getCounterAdmin() {
+        return counterAdmin;
+    }
+
+    /**
+     * @param counterAdmin the counterAdmin to set
+     */
+    public void setCounterAdmin(int counterAdmin) {
+        this.counterAdmin = counterAdmin;
+    }
+    
+    
 }
