@@ -301,6 +301,7 @@ public class Queues {
                     setpTail(anterior);
                 }
                 p1.queue(actual);
+//                actual.setCounter(0);
             }else{
                 actual.setCounter(actual.getCounter() + 1);
                 anterior = actual;
@@ -322,6 +323,7 @@ public class Queues {
                     setpTail(anterior);
                 }
                 p2.queue(actual);
+//                actual.setCounter(0);
             }else{
                 actual.setCounter(actual.getCounter() + 1);
                 anterior = actual;
