@@ -19,11 +19,5 @@ public class Main {
         // TODO code application logic here
         Dashboard db = new Dashboard();
         db.setVisible(true);
-//        EventQueue.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                db.setVisible(true);
-//            }
-//        });
     }
 }
