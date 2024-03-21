@@ -14,6 +14,7 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -41,10 +42,9 @@ public class Admin extends Thread{
     private Queues winners;
     private int avatarWinners;
     private int usmWinners;
-    private Semaphore sem;
+    public Semaphore sem;
     private int idAvatar;
     private int idUSM;
-//    private AI ai;
     public AI ai;
     private int time;
     private Dashboard db;
@@ -53,9 +53,11 @@ public class Admin extends Thread{
     String[] usmImgCharacters = new String[] {"/Images/Mordecai.png", "/Images/Rigby.png", "/Images/Benson.png", "/Images/Skips.png", "/Images/Musculoso.png"};
     String[] avatarImgCharacters = new String[] {"/Images/Aang.png", "/Images/Katara.png", "/Images/Sokka.png", "/Images/Zuko.png", "/Images/Iroh.png"};
     
-//    AI ai = new AI(sem, db.getSldDuracion().getValue(), db, db.admin);
+    public Semaphore mutex;
+    public Semaphore s;
+    private int counterAdmin = 0;
     
-    public Admin(Semaphore sem, int nCharacters, AI ai, int time, Dashboard db){
+    public Admin(Semaphore sem, int nCharacters, AI ai, int time, Dashboard db, Semaphore s, Semaphore mutex){
         this.sem = sem;
         this.p1Avatar = new Queues();
         this.p2Avatar = new Queues();
@@ -74,7 +76,9 @@ public class Admin extends Thread{
         this.idAvatar = 1;
         this.idUSM = 1;
         this.db = db;
-        this.ai = new AI(this.sem, db.getSldDuracion().getValue(), this.db, this);
+        this.s = s;
+        this.mutex = mutex;
+        this.ai = new AI(this.s, db.getSldDuracion().getValue(), this.db, this, this.sem, this.mutex);
         this.time = time;
         
         
@@ -92,9 +96,16 @@ public class Admin extends Thread{
         Random random = new Random();
         int auxPriority;
         float auxSkill, auxLife, auxStrength, auxAgility;
+        String qualityIndicatorSkill, qualityIndicatorLife, qualityIndicatorStrength, qualityIndicatorAgility;
 
         // Asignar prioridad
         auxPriority = random.nextInt(3) + 1; // Valores entre 1 y 3
+        
+        // Determinar colores basados en la calidad
+        qualityIndicatorSkill = random.nextFloat() < 0.6 ? "\u2605" : ""; // 60% de ser dorado, caso contrario plateado
+        qualityIndicatorLife = random.nextFloat() < 0.7 ? "\u2605" : "";
+        qualityIndicatorStrength = random.nextFloat() < 0.5 ? "\u2605" : "";
+        qualityIndicatorAgility = random.nextFloat() < 0.4 ? "\u2605" : "";
 
         // Asignar habilidades según la prioridad
         switch (auxPriority) {
@@ -126,7 +137,7 @@ public class Admin extends Thread{
         if ("A".equals(character)) {
             int auxPosition = random.nextInt(5);
             String imagePath = this.avatarImgCharacters[auxPosition];
-            newCharacter = new Characters("A" + getIdAvatar(), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, imagePath);
+            newCharacter = new Characters("A" + getIdAvatar(), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, imagePath, qualityIndicatorSkill, qualityIndicatorLife, qualityIndicatorStrength, qualityIndicatorAgility);
             System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
             setIdAvatar(getIdAvatar() + 1);
             switch (auxPriority) {
@@ -146,7 +157,7 @@ public class Admin extends Thread{
         } else {
             int auxPosition = random.nextInt(5);
             String imagePath = this.usmImgCharacters[auxPosition];
-            newCharacter = new Characters("U" + getIdUSM(), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, imagePath);
+            newCharacter = new Characters("U" + getIdUSM(), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, imagePath, qualityIndicatorSkill, qualityIndicatorLife, qualityIndicatorStrength, qualityIndicatorAgility);
             System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
             setIdUSM(getIdUSM() + 1);
             switch (auxPriority) {
@@ -176,6 +187,7 @@ public class Admin extends Thread{
     //Tiene un error que cuando una cola se queda vacia, manda los siguientes de las otras colas
     public void sendCharacters(){
         // Intentar enviar personajes de la cola de prioridad 1
+//        p1Avatar no vacía y p1USM no vacía
         if (!p1Avatar.isEmpty() && !p1USM.isEmpty()) {
             Characters avatarP1 = p1Avatar.dequeue();
             Characters usmP1 = p1USM.dequeue();
@@ -183,30 +195,133 @@ public class Admin extends Thread{
             System.out.println("Se recibieron los personajes de la cola de prioridad 1");
             this.ai.showCharactersInfo();
         }
+
+//        p1Avatar no vacía y p1USM vacía
+        else if (!p1Avatar.isEmpty() && p1USM.isEmpty()) {
+            Characters avatarP1 = p1Avatar.dequeue();
+            Characters usmP2 = p2USM.dequeue();
+            ai.receiveCharacters(avatarP1, usmP2);// Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes de la cola de prioridad 1");
+            this.ai.showCharactersInfo();
+        }
+//        p1Avatar vacía y p1USM no vacía 
+        else if (p1Avatar.isEmpty() && !p1USM.isEmpty()) {
+            Characters avatarP2 = p2Avatar.dequeue();
+            Characters usmP1 = p1USM.dequeue();
+            ai.receiveCharacters(avatarP2, usmP1);// Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes de la cola de prioridad 1");
+            this.ai.showCharactersInfo();
+        }
+        
+        else if (!p1Avatar.isEmpty() && p1USM.isEmpty() && p2USM.isEmpty()) {
+            Characters avatarP1 = p1Avatar.dequeue();
+            Characters usmP3 = p3USM.dequeue();
+            ai.receiveCharacters(avatarP1, usmP3);// Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes de la cola de prioridad 1");
+            this.ai.showCharactersInfo();
+        }
+        
+        else if (p1Avatar.isEmpty() && !p1USM.isEmpty() && p2Avatar.isEmpty()) {
+            Characters avatarP3 = p3Avatar.dequeue();
+            Characters usmP1 = p1USM.dequeue();
+            ai.receiveCharacters(avatarP3, usmP1);// Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes de la cola de prioridad 1");
+            this.ai.showCharactersInfo();
+        }      
+
     // Si la cola de prioridad 1 está vacía, intentar enviar personajes de la cola de prioridad 2
-        else if (!p2Avatar.isEmpty() && !p2USM.isEmpty()) {
+        else if (!p2Avatar.isEmpty() && !p2USM.isEmpty() && p1Avatar.isEmpty() && p1USM.isEmpty()) {
             Characters avatarP2 = p2Avatar.dequeue();
             Characters usmP2 = p2USM.dequeue();
             ai.receiveCharacters(avatarP2, usmP2); // Enviar los personajes a la IA
             System.out.println("Se recibieron los personajes de la cola de prioridad 2");
             this.ai.showCharactersInfo();
         }
+
+        else if (!p2Avatar.isEmpty() && p2USM.isEmpty()&& p1Avatar.isEmpty() && p1USM.isEmpty()) {
+            Characters avatarP2 = p2Avatar.dequeue();
+            Characters usmP3 = p3USM.dequeue();
+            ai.receiveCharacters(avatarP2, usmP3); // Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes de la cola de prioridad 2");
+            this.ai.showCharactersInfo();
+        }
+        
+        else if (p2Avatar.isEmpty() && !p2USM.isEmpty() && p1Avatar.isEmpty() && p1USM.isEmpty()) {
+            Characters avatarP3 = p3Avatar.dequeue();
+            Characters usmP2 = p2USM.dequeue();
+            ai.receiveCharacters(avatarP3, usmP2); // Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes de la cola de prioridad 2");
+            this.ai.showCharactersInfo();
+        }
+  
     // Si la cola de prioridad 2 está vacía, intentar enviar personajes de la cola de prioridad 3
-        else if (!p3Avatar.isEmpty() && !p3USM.isEmpty()) {
+        else if (!p3Avatar.isEmpty() && !p3USM.isEmpty()&& p1Avatar.isEmpty() && p1USM.isEmpty() && p2Avatar.isEmpty() && p2USM.isEmpty()) {
             Characters avatarP3 = p3Avatar.dequeue();
             Characters usmP3 = p3USM.dequeue();
             ai.receiveCharacters(avatarP3, usmP3); // Enviar los personajes a la IA
             System.out.println("Se recibieron los personajes de la cola de prioridad 3");
             this.ai.showCharactersInfo();
         }
-    // Si todas las colas de prioridad están vacías, intentar enviar personajes de las colas de refuerzo
-        else if (!refuerzoAvatar.isEmpty() && !refuerzoUSM.isEmpty()) {
-            Characters refuerzoAvatarChar = refuerzoAvatar.dequeue();
-            Characters refuerzoUSMChar = refuerzoUSM.dequeue();
-            ai.receiveCharacters(refuerzoAvatarChar, refuerzoUSMChar); // Enviar los personajes a la IA
-            System.out.println("Se recibieron los personajes de las colas de refuerzo");
+        
+        else if (!p3Avatar.isEmpty() && p1Avatar.isEmpty() && !p1USM.isEmpty() && p2Avatar.isEmpty()) {
+            Characters avatarP3 = p3Avatar.dequeue();
+            Characters usmP1 = p1USM.dequeue();
+            ai.receiveCharacters(avatarP3, usmP1); // Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes de la cola de prioridad 3");
             this.ai.showCharactersInfo();
         }
+        
+        else if (!p3Avatar.isEmpty() && p1Avatar.isEmpty() && !p2USM.isEmpty() && p2Avatar.isEmpty()) {
+            Characters avatarP3 = p3Avatar.dequeue();
+            Characters usmP2 = p2USM.dequeue();
+            ai.receiveCharacters(avatarP3, usmP2); // Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes de la cola de prioridad 3");
+            this.ai.showCharactersInfo();
+        }
+        
+        else if (!p3USM.isEmpty() && p1USM.isEmpty() && !p1Avatar.isEmpty() && p2USM.isEmpty()) {
+            Characters avatarP1 = p1Avatar.dequeue();
+            Characters usmP3 = p3USM.dequeue();
+            ai.receiveCharacters(avatarP1, usmP3); // Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes de la cola de prioridad 3");
+            this.ai.showCharactersInfo();
+        }
+        
+        else if (!p3USM.isEmpty() && p1USM.isEmpty() && !p2Avatar.isEmpty() && p2USM.isEmpty()) {
+            Characters avatarP2 = p2Avatar.dequeue();
+            Characters usmP3 = p3USM.dequeue();
+            ai.receiveCharacters(avatarP2, usmP3); // Enviar los personajes a la IA
+            System.out.println("Se recibieron los personajes de la cola de prioridad 3");
+            this.ai.showCharactersInfo();
+        }
+       
+//        No Eliminar
+        
+//        else if (!p3Avatar.isEmpty() && p3USM.isEmpty()) {
+//            Characters avatarP3 = p3Avatar.dequeue();
+//            Characters usmRefuerzos = refuerzoUSM.dequeue();
+//            ai.receiveCharacters(avatarP3, usmRefuerzos); // Enviar los personajes a la IA
+//            System.out.println("Se recibieron los personajes de la cola de prioridad 3");
+//            this.ai.showCharactersInfo();
+//        }
+//        
+//        else if (p3Avatar.isEmpty() && !p3USM.isEmpty()) {
+//            Characters avatarRefuerzos = refuerzoAvatar.dequeue();
+//            Characters usmP3 = p3USM.dequeue();
+//            ai.receiveCharacters(avatarRefuerzos, usmP3); // Enviar los personajes a la IA
+//            System.out.println("Se recibieron los personajes de la cola de prioridad 3");
+//            this.ai.showCharactersInfo();
+//        }
+        
+    // Si todas las colas de prioridad están vacías, intentar enviar personajes de las colas de refuerzo
+//        else if (!refuerzoAvatar.isEmpty() && !refuerzoUSM.isEmpty()) {
+//            Characters refuerzoAvatarChar = refuerzoAvatar.dequeue();
+//            Characters refuerzoUSMChar = refuerzoUSM.dequeue();
+//            ai.receiveCharacters(refuerzoAvatarChar, refuerzoUSMChar); // Enviar los personajes a la IA
+//            System.out.println("Se recibieron los personajes de las colas de refuerzo");
+//            this.ai.showCharactersInfo();
+//        }
+        
     // Si todas las colas están vacías, mostrar un mensaje indicando que no hay personajes disponibles
         else {
             System.out.println("No hay personajes disponibles para enviar a la IA en ninguna cola.");
@@ -225,14 +340,22 @@ public class Admin extends Thread{
         db.getTxtRefuerzosUSM().setText(this.refuerzoUSM.print());
         db.getTxtGanadores().setText(this.winners.print()); 
     }
+    
+//    public void moveP2toP1(){
+//        this.p2Avatar.extractP2toP1(8, p1Avatar);
+//    }
         
     @Override
     public void run(){
         while(true){
             try{
-//                sem.acquire();
-//                if (db.counter == 0){
+                mutex.acquire();
+                        
                     mostrarColas();
+                    if (p1Avatar.isEmpty() && p2Avatar.isEmpty() && p3Avatar.isEmpty() || p1USM.isEmpty() && p2USM.isEmpty() && p3USM.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Se ha dado por terminada la simulación");
+                        System.exit(0);
+                    }
                     sendCharacters();
                     if(cycles == 1){
                         createRandomCharacters();
@@ -241,10 +364,8 @@ public class Admin extends Thread{
                         cycles++;
                     }
                     db.setSldDuracion(db.getSldDuracion());
-//                }
-//                db.counter = 1;
-                sleep((db.getSldDuracion().getValue() * 1000));
-//                sem.release();
+
+                s.release();
             }catch (InterruptedException ex) {
                 Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -516,4 +637,20 @@ public class Admin extends Thread{
     public void setIdUSM(int idUSM) {
         this.idUSM = idUSM;
     }
+
+    /**
+     * @return the counterAdmin
+     */
+    public int getCounterAdmin() {
+        return counterAdmin;
+    }
+
+    /**
+     * @param counterAdmin the counterAdmin to set
+     */
+    public void setCounterAdmin(int counterAdmin) {
+        this.counterAdmin = counterAdmin;
+    }
+    
+    
 }

@@ -16,8 +16,6 @@ public class Queues {
 //1, 2 y 3, y la cola de refuerzo, existiendo un total de 8 colas en la
 //simulación.
     
-//    private Node pHead;
-//    private Node pTail;
     private Characters pHead;
     private Characters pTail;
     private int size;
@@ -56,34 +54,6 @@ public class Queues {
         this.pTail = pTail;
     }
 
-//    /**
-//     * @return the pHead
-//     */
-//    public Node getpHead() {
-//        return pHead;
-//    }
-//
-//    /**
-//     * @param pHead the pHead to set
-//     */
-//    public void setpHead(Node pHead) {
-//        this.pHead = pHead;
-//    }
-//
-//    /**
-//     * @return the pTail
-//     */
-//    public Node getpTail() {
-//        return pTail;
-//    }
-//
-//    /**
-//     * @param pTail the pTail to set
-//     */
-//    public void setpTail(Node pTail) {
-//        this.pTail = pTail;
-//    }
-
     /**
      * @return the size
      */
@@ -118,43 +88,21 @@ public class Queues {
     }
     return false;
 }
-//    public Object readHead(){
-//        return pHead.getData();
-//    }
     
-//    public void queue(Characters data){
-//        Node pNew = new Node(data);
-//        pNew.setpNext(null);
-//        
-//        if(pHead == null){
-//            pHead = pNew;
-//        }else{
-//            pTail.setpNext(pNew);
-//        }
-//        pTail = pNew;
-//        size++;
-//    }
-    
-    public void queue(Characters data){
-        if(isEmpty()){
-            pHead = pTail = data;
+        public void queue(Characters data){
+        if (this.isEmpty()){
+            this.setpHead(pTail = data);
+            this.setpTail(data);
         }else{
-            Characters pNew = pTail;
-            pNew.setpNext(data);
-            pTail = pNew.getpNext();
+            if(this.getpTail()== null){
+                return;
+            }
+            this.getpTail().setpNext(data);
+            this.setpTail(data);
         }
-        size++;
+        this.setSize(this.getSize() + 1);
     }
-    
-//    public void dequeue(){
-//        Node pTemp = pHead;
-//        pHead = pHead.getpNext();
-//        size--;
-//        if(pHead == null){
-//            pTail = null;
-//        }
-//    }
-    
+
     public Characters dequeue(){
         if(isEmpty()){
             return null;
@@ -166,32 +114,71 @@ public class Queues {
             return pNew;
         }
     }
-    
-//    public String print(){
-//        Node pAux = pHead;
-//        String cola = "";
-//        
-//        while(pAux != null){
-//            cola += pAux.getData() + ", ";
-//            pAux = pAux.pNext;
-//        }
-//        return cola;
-//    }   
-    
+ 
     public String print(){
         String cola = "";
         if(isEmpty()){
             return "Vacía";
         }else{
             Characters pNew = pHead;
-            int auxSize = 0;
-            while(auxSize < size){
+//            int auxSize = 0;
+//            while(auxSize < size){
+            while(pNew != null){
                 cola += pNew.getId() + ", ";
+                if(pNew.getpNext() == null){
+                    break;
+                }
                 pNew = pNew.getpNext();
-                auxSize++;
+//                auxSize++;
+//            }
             }
         }
         return cola;
     }   
+    
+    public void extractP2toP1(int num, Queues p1){
+        Characters actual = getpHead();
+        Characters anterior = null;
+        while(actual != null){
+            if(actual.getCounter() == 8){
+                if(anterior == null){
+                    setpHead(getpHead().getpNext());
+                }else{
+                    anterior.setpNext(actual.getpNext());
+                }
+                if(actual == getpTail()){
+                    setpTail(anterior);
+                }
+                actual.setCounter(0);
+                p1.queue(actual);
+            }else{
+                actual.setCounter(actual.getCounter() + 1);
+                anterior = actual;
+            }
+            actual = actual.getpNext();
+        }
+    }
+    public void extractP3toP2(int num, Queues p2){
+        Characters actual = getpHead();
+        Characters anterior = null;
+        while(actual != null){
+            if(actual.getCounter() == 8){
+                if(anterior == null){
+                    setpHead(getpHead().getpNext());
+                }else{
+                    anterior.setpNext(actual.getpNext());
+                }
+                if(actual == getpTail()){
+                    setpTail(anterior);
+                }
+                actual.setCounter(0);
+                p2.queue(actual);
+            }else{
+                actual.setCounter(actual.getCounter() + 1);
+                anterior = actual;
+            }
+            actual = actual.getpNext();
+        }
+    }
     
 }

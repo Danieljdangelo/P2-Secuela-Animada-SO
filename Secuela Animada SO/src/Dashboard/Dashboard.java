@@ -33,21 +33,21 @@ public class Dashboard extends javax.swing.JFrame {
      * Creates new form Dashboard
      */
     
-//    Semaphore mainMutex = new Semaphore(1);
-    private Semaphore sem;
-//    private Admin admin;
+    public Semaphore sem;
+    public Semaphore s;
+    public Semaphore mutex;
     public Admin admin;
     private AI ai;
-//    public AI ai;
-    public int counter = 0;
+    private int counter = 0;
     
     public Dashboard() {
         initComponents();
         this.setResizable(false);
         this.setLocationRelativeTo(null);
-        this.sem = new Semaphore(1);
-//        this.ai = new AI(sem, getSldDuracion().getValue(), this, admin);
-        this.admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
+        this.sem = new Semaphore(0);
+        this.s = new Semaphore(0);
+        this.mutex = new Semaphore(1);
+        this.admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this, s, mutex);
         
     }
     
@@ -377,61 +377,15 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_txtRefuerzosUSMActionPerformed
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-//        sem = new Semaphore(1);
-//        
-//        ai = new AI(sem, getSldDuracion().getValue(), this, admin);
-//        admin = new Admin(sem, 20, ai, getSldDuracion().getValue(), this);
-//        
-//        try{
-//            
-//             
+   
             while(true){
-//                sem.acquire();
-//                ai.setStatus("Esperando");
-//                txtDecisionIA.setText(ai.getStatus());
-//                sleep((getSldDuracion().getValue()/3) * 1000);
-//                sem.release();
-//                
-//                admin.start();
-//                
-//                sem.acquire();
-//                ai.setStatus("Decidiendo");
-//                txtDecisionIA.setText(ai.getStatus());
-//                sleep((getSldDuracion().getValue()/3) * 1000);
-//                sem.release();
               
-
+                sem.release();
                 admin.start();
-
-//                ai.start();
-
-//                sem.acquire();
-//                ai.setStatus("Anunciando");
-//                txtDecisionIA.setText(ai.getStatus());
-//                sleep((getSldDuracion().getValue()/3) * 1000);
-//                sem.release();
-//                
-                admin.ai.start();
                 
-//                sem.acquire();
-//                txtP1Avatar.setText(admin.getP1Avatar().print());
-//                txtP2Avatar.setText(admin.getP2Avatar().print());
-//                txtP3Avatar.setText(admin.getP3Avatar().print());
-//                txtRefuerzosAvatar.setText(admin.getRefuerzoAvatar().print());
-//                txtP1USM.setText(admin.getP1USM().print());
-//                txtP2USM.setText(admin.getP2USM().print());
-//                txtP3USM.setText(admin.getP3USM().print());
-//                txtRefuerzosUSM.setText(admin.getRefuerzoUSM().print());
-//                txtGanadores.setText(admin.getWinners().print());
-//                txtVictoriasAvatar.setText(Integer.toString(admin.getAvatarWinners()));
-//                txtVictoriasUSM.setText(Integer.toString(admin.getUsmWinners()));
-//                
-//                sem.release();
+                admin.ai.start();
             }
             
-//        }catch (InterruptedException ex) {
-//            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }//GEN-LAST:event_btnStartActionPerformed
 
     /**
@@ -569,20 +523,6 @@ public class Dashboard extends javax.swing.JFrame {
         this.imgUSM = imgUSM;
     }
 
-//    /**
-//     * @return the imgAvatar
-//     */
-//    public javax.swing.JTextPane getImgAvatar() {
-//        return imgAvatar;
-//    }
-//
-//    /**
-//     * @param imgAvatar the imgAvatar to set
-//     */
-//    public void setImgAvatar(javax.swing.JTextPane imgAvatar) {
-//        this.imgAvatar = imgAvatar;
-//    }
-
     /**
      * @return the txtVictoriasAvatar
      */
@@ -623,6 +563,20 @@ public class Dashboard extends javax.swing.JFrame {
      */
     public void setResultsPane(javax.swing.JTextPane resultsPane) {
         this.resultsPane = resultsPane;
+    }
+
+    /**
+     * @return the counter
+     */
+    public int getCounter() {
+        return counter;
+    }
+
+    /**
+     * @param counter the counter to set
+     */
+    public void setCounter(int counter) {
+        this.counter = counter;
     }
     
     
