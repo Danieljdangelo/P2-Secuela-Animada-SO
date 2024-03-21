@@ -96,9 +96,16 @@ public class Admin extends Thread{
         Random random = new Random();
         int auxPriority;
         float auxSkill, auxLife, auxStrength, auxAgility;
+        String qualityIndicatorSkill, qualityIndicatorLife, qualityIndicatorStrength, qualityIndicatorAgility;
 
         // Asignar prioridad
         auxPriority = random.nextInt(3) + 1; // Valores entre 1 y 3
+        
+        // Determinar colores basados en la calidad
+        qualityIndicatorSkill = random.nextFloat() < 0.6 ? "\u2605" : ""; // 60% de ser dorado, caso contrario plateado
+        qualityIndicatorLife = random.nextFloat() < 0.7 ? "\u2605" : "";
+        qualityIndicatorStrength = random.nextFloat() < 0.5 ? "\u2605" : "";
+        qualityIndicatorAgility = random.nextFloat() < 0.4 ? "\u2605" : "";
 
         // Asignar habilidades según la prioridad
         switch (auxPriority) {
@@ -130,7 +137,7 @@ public class Admin extends Thread{
         if ("A".equals(character)) {
             int auxPosition = random.nextInt(5);
             String imagePath = this.avatarImgCharacters[auxPosition];
-            newCharacter = new Characters("A" + getIdAvatar(), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, imagePath);
+            newCharacter = new Characters("A" + getIdAvatar(), this.avatarCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, imagePath, qualityIndicatorSkill, qualityIndicatorLife, qualityIndicatorStrength, qualityIndicatorAgility);
             System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
             setIdAvatar(getIdAvatar() + 1);
             switch (auxPriority) {
@@ -150,7 +157,7 @@ public class Admin extends Thread{
         } else {
             int auxPosition = random.nextInt(5);
             String imagePath = this.usmImgCharacters[auxPosition];
-            newCharacter = new Characters("U" + getIdUSM(), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, imagePath);
+            newCharacter = new Characters("U" + getIdUSM(), this.usmCharacters[auxPosition], auxPriority, (int) auxSkill, (int) auxLife, (int) auxStrength, (int) auxAgility, imagePath, qualityIndicatorSkill, qualityIndicatorLife, qualityIndicatorStrength, qualityIndicatorAgility);
             System.out.println(newCharacter.getInfo());//esto es para probar que se estan creando los personajes
             setIdUSM(getIdUSM() + 1);
             switch (auxPriority) {

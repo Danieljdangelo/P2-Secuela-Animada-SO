@@ -207,6 +207,32 @@ public class AI  extends Thread{
         
     }
     
+    private void incrementarContadorPersonajes() {
+        // Incrementar el contador en la P2 de Avatar
+        Queues cola1 = admin.getP2Avatar();
+        incrementarContadorCola(cola1);
+
+        // Incrementar el contador en la P2 de Usm
+        Queues cola2 = admin.getP2USM();
+        incrementarContadorCola(cola2);
+
+        // Incrementar el contador en la P3 de Avatar
+        Queues cola3 = admin.getP3Avatar();
+        incrementarContadorCola(cola3);
+
+        // Incrementar el contador en la P3 de Usm
+        Queues cola4 = admin.getP3USM();
+        incrementarContadorCola(cola4);
+    }
+
+    private void incrementarContadorCola(Queues cola) {
+        Characters current = cola.getpHead();
+        while (current != null) {
+            current.incrementarContador();
+            current = current.getpNext();
+        }
+    }
+    
     private void moveWinnerToWinnersQueue(Characters winner) {//Ahora desencola a los de cualquier cola, solo solo era P1
         if (this.admin.getP1Avatar().contains(winner)) { // Si el ganador proviene de la cola P1Avatar
             this.admin.getP1Avatar().dequeue(); // Quitarlo de la cola P1Avatar
