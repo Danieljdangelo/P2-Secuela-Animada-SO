@@ -34,6 +34,7 @@ public class Characters {
         this.id = id;
         this.name = name;
         this.priority = priority;
+        this.counter = 0;
         this.skill = skill;
         this.life = life;
         this.strength = strength;
@@ -95,6 +96,15 @@ public class Characters {
      */
     public void setCounter(int counter) {
         this.counter = counter;
+    }
+    
+    public void incrementarContador() {
+        counter++;
+        if (counter >= 8 && priority != 1) {
+            // Si el contador llega a 8 y el personaje no tiene prioridad 1, se reduce la prioridad
+            priority--;
+            counter = 0; // Reiniciar contador
+        }
     }
 
     /**
