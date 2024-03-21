@@ -264,8 +264,8 @@ public class AI  extends Thread{
     private void returnCharactersToPriority1Queues(Characters avatar, Characters usm) {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
 //    this.admin.getP1Avatar().dequeue();
 //    this.admin.getP1USM().dequeue();
-    this.admin.getP1Avatar().queue(this.avatar);
-    this.admin.getP1USM().queue(this.usm);
+    this.admin.getP1Avatar().queue(avatar);
+    this.admin.getP1USM().queue(usm);
     }
     
     private void moveCharactersToRefuerzoQueues(Characters avatar, Characters usm) {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
