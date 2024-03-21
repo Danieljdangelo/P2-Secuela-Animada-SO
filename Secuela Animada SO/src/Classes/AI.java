@@ -104,11 +104,11 @@ public class AI  extends Thread{
                 }
             }
         }else if(result == 3){
-            returnCharactersToPriority1Queues();
+            returnCharactersToPriority1Queues(this.avatar, this.usm);
             db.getResultsPane().setText("Veredicto: Hubo un empate");
             veredict =  null;
         }else{
-            moveCharactersToRefuerzoQueues();
+            moveCharactersToRefuerzoQueues(this.avatar, this.usm);
             db.getResultsPane().setText("Veredicto: No se puedo llevar a cabo el combate");
             veredict =  null;
         }
@@ -261,18 +261,18 @@ public class AI  extends Thread{
     this.admin.getP1USM().queue(this.usm);
     }
     
-    private void returnCharactersToPriority1Queues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
-    this.admin.getP1Avatar().dequeue();
-    this.admin.getP1USM().dequeue();
-    this.admin.getP1Avatar().queue(this.avatar);
-    this.admin.getP1USM().queue(this.usm);
+    private void returnCharactersToPriority1Queues(Characters avatar, Characters usm) {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
+//    this.admin.getP1Avatar().dequeue();
+//    this.admin.getP1USM().dequeue();
+    this.admin.getP1Avatar().queue(avatar);
+    this.admin.getP1USM().queue(usm);
     }
     
-    private void moveCharactersToRefuerzoQueues() {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
-    this.admin.getP1Avatar().dequeue();
-    this.admin.getRefuerzoAvatar().queue(this.avatar);
-    this.admin.getP1USM().dequeue();
-    this.admin.getRefuerzoUSM().queue(this.usm);
+    private void moveCharactersToRefuerzoQueues(Characters avatar, Characters usm) {//Hay que cambiarlo para que mueva los personajes a sus colas respectivas
+//    this.admin.getP1Avatar().dequeue();
+    this.admin.getRefuerzoAvatar().queue(avatar);
+//    this.admin.getP1USM().dequeue();
+    this.admin.getRefuerzoUSM().queue(usm);
     }
     
     public void exitRefuerzoQueues(){
