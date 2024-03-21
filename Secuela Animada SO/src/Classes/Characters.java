@@ -29,8 +29,12 @@ public class Characters {
     private int agility;
     private String imagePath;
     private Characters pNext;
+    private String calidadHabilidad;
+    private String calidadVida;
+    private String calidadFuerza;
+    private String calidadAgilidad;
     
-    public Characters(String id, String name, int priority, int skill, int life, int strength, int agility, String imagePath){
+    public Characters(String id, String name, int priority, int skill, int life, int strength, int agility, String imagePath, String calidadHabilidad, String calidadVida, String calidadFuerza, String calidadAgilidad){
         this.id = id;
         this.name = name;
         this.priority = priority;
@@ -40,6 +44,10 @@ public class Characters {
         this.strength = strength;
         this.agility = agility;
         this.imagePath = imagePath;
+        this.calidadHabilidad = calidadHabilidad;
+        this.calidadVida = calidadVida;
+        this.calidadFuerza = calidadFuerza;
+        this.calidadAgilidad = calidadAgilidad;
     }
 
     /**
@@ -190,10 +198,42 @@ public class Characters {
     public void setpNext(Characters pNext) {
         this.pNext = pNext;
     }
+
+    public String getCalidadHabilidad() {
+        return calidadHabilidad;
+    }
+
+    public String getCalidadVida() {
+        return calidadVida;
+    }
+
+    public String getCalidadFuerza() {
+        return calidadFuerza;
+    }
+
+    public String getCalidadAgilidad() {
+        return calidadAgilidad;
+    }
+
+    public void setCalidadHabilidad(String calidadHabilidad) {
+        this.calidadHabilidad = calidadHabilidad;
+    }
+
+    public void setCalidadVida(String calidadVida) {
+        this.calidadVida = calidadVida;
+    }
+
+    public void setCalidadFuerza(String calidadFuerza) {
+        this.calidadFuerza = calidadFuerza;
+    }
+
+    public void setCalidadAgilidad(String calidadAgilidad) {
+        this.calidadAgilidad = calidadAgilidad;
+    }
     
     public String getInfo(){
         String infoChar;
-        return infoChar = "\nID: " + this.getId() + "\nNombre: " + this.getName() + "\nSkill: " + this.getSkill() + "\nLife: " + this.getLife() + "\nStrength: " + this.getStrength() + "\nAgility: " + this.getAgility();
+        return infoChar = "\nID: " + this.getId() + "\nName: " + this.getName() + "\nSkill: " + this.getSkill() + this.getCalidadHabilidad() + "\nLife: " + this.getLife() + this.getCalidadVida()+ "\nStrength: " + this.getStrength() + this.getCalidadFuerza() + "\nAgility: " + this.getAgility() + this.getCalidadAgilidad();
     }
     
     public String getPath(){
