@@ -16,8 +16,6 @@ public class Queues {
 //1, 2 y 3, y la cola de refuerzo, existiendo un total de 8 colas en la
 //simulación.
     
-//    private Node pHead;
-//    private Node pTail;
     private Characters pHead;
     private Characters pTail;
     private int size;
@@ -56,34 +54,6 @@ public class Queues {
         this.pTail = pTail;
     }
 
-//    /**
-//     * @return the pHead
-//     */
-//    public Node getpHead() {
-//        return pHead;
-//    }
-//
-//    /**
-//     * @param pHead the pHead to set
-//     */
-//    public void setpHead(Node pHead) {
-//        this.pHead = pHead;
-//    }
-//
-//    /**
-//     * @return the pTail
-//     */
-//    public Node getpTail() {
-//        return pTail;
-//    }
-//
-//    /**
-//     * @param pTail the pTail to set
-//     */
-//    public void setpTail(Node pTail) {
-//        this.pTail = pTail;
-//    }
-
     /**
      * @return the size
      */
@@ -118,48 +88,6 @@ public class Queues {
     }
     return false;
 }
-//    public Object readHead(){
-//        return pHead.getData();
-//    }
-    
-//    public void queue(Characters data){
-//        Node pNew = new Node(data);
-//        pNew.setpNext(null);
-//        
-//        if(pHead == null){
-//            pHead = pNew;
-//        }else{
-//            pTail.setpNext(pNew);
-//        }
-//        pTail = pNew;
-//        size++;
-//    }
-    
-//    public void queue(Characters data){
-//        if(isEmpty()){
-//            pHead = pTail = data;
-//        }else{
-//            Characters pNew = pTail;
-//            pNew.setpNext(data);
-//            pTail = pNew.getpNext();
-//        }
-//        size++;
-//    }
-    
-    
-    
-    
-//    Sirve mejor que los otros
-    
-//    public void queue(Characters data){
-//        if (this.isEmpty()){
-//            this.setpHead(pTail = data);
-//        }else{
-//            this.getpTail().setpNext(data);
-//            this.setpTail(data);
-//        }
-//        this.setSize(this.getSize() + 1);
-//    }
     
         public void queue(Characters data){
         if (this.isEmpty()){
@@ -167,7 +95,6 @@ public class Queues {
             this.setpTail(data);
         }else{
             if(this.getpTail()== null){
-//                JOptionPane.showMessageDialog(null, "NULL");
                 return;
             }
             this.getpTail().setpNext(data);
@@ -175,55 +102,7 @@ public class Queues {
         }
         this.setSize(this.getSize() + 1);
     }
-    
-//    public void queue(Characters data){
-//        if (this.isEmpty()){
-//            this.setpHead(pTail = data);
-//        }else{
-//            Characters pNew = this.getpTail();
-//            pNew.setpNext(data);
-//            this.setpTail(data);
-//        }
-//        this.setSize(this.getSize() + 1);
-//    }
-//    
-    
-    
-    
-    
-    
-//    public void queue(Characters data){
-//        if(isEmpty()){
-//            pHead = pTail = data;
-//        }else{
-//            Characters pNew = data;
-//            pTail.setpNext(pNew);
-//            pNew.setpNext(null);
-//            pTail = pNew;
-//        }
-//        size++;
-//    }
-    
-//    public void queue(Characters data){
-//        Node pNew = new Node(data);
-//        if(isEmpty()){
-//            pHead = pTail = pNew.getData();
-////            Characters pNew = pTail;
-//            pTail.setpNext(pNew.getData());
-//            pTail = pNew.getData();
-//        }
-//        size++;
-//    }
-    
-//    public void dequeue(){
-//        Node pTemp = pHead;
-//        pHead = pHead.getpNext();
-//        size--;
-//        if(pHead == null){
-//            pTail = null;
-//        }
-//    }
-    
+
     public Characters dequeue(){
         if(isEmpty()){
             return null;
@@ -235,18 +114,7 @@ public class Queues {
             return pNew;
         }
     }
-    
-//    public String print(){
-//        Node pAux = pHead;
-//        String cola = "";
-//        
-//        while(pAux != null){
-//            cola += pAux.getData() + ", ";
-//            pAux = pAux.pNext;
-//        }
-//        return cola;
-//    }   
-    
+ 
     public String print(){
         String cola = "";
         if(isEmpty()){
@@ -268,25 +136,6 @@ public class Queues {
         return cola;
     }   
     
-//    public void extractP2toP1(int num, Queues p1){
-//        while(!isEmpty()){
-//            Characters pTemp = getpHead();
-//                if(pTemp.getCounter() == 8){
-//                    pTemp = pTemp.getpNext();
-//                    p1.queue(pTemp);
-//    //                Characters nodeDequeue = dequeue();
-////                    pTemp = pTemp.getpNext();
-//                }else{
-//                    pTemp.setCounter(pTemp.getCounter() + 1);
-//                    queue(pTemp);
-////                    Characters nodeDequeue = dequeue();
-////                    queue(nodeDequeue);
-//                    pTemp = pTemp.getpNext();
-//                }
-////            }
-//        }
-//    }
-    
     public void extractP2toP1(int num, Queues p1){
         Characters actual = getpHead();
         Characters anterior = null;
@@ -300,6 +149,7 @@ public class Queues {
                 if(actual == getpTail()){
                     setpTail(anterior);
                 }
+                actual.setCounter(0);
                 p1.queue(actual);
             }else{
                 actual.setCounter(actual.getCounter() + 1);
@@ -321,6 +171,7 @@ public class Queues {
                 if(actual == getpTail()){
                     setpTail(anterior);
                 }
+                actual.setCounter(0);
                 p2.queue(actual);
             }else{
                 actual.setCounter(actual.getCounter() + 1);
